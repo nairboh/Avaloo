@@ -32,9 +32,7 @@ class NameFragment : Fragment(), AnkoLogger {
 
             info("Name for client set to " + name)
 
-            activity.fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, NameFragment())
-                    .commit()
+            activity.replaceFragment(R.id.fragment_container, NameFragment())
         } else {
             toast("Please enter a name to continue")
         }

@@ -9,6 +9,6 @@ class LobbyActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lobby)
 
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, NameFragment()).commit()
+        replaceFragment(R.id.fragment_container, NameFragment())
     }
 }
