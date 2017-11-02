@@ -35,7 +35,7 @@ class NameFragment : Fragment(), AnkoLogger {
             defaultSharedPreferences.edit().putString(getString(R.string.key_name), name).apply()
             info("Name for client set to " + name)
 
-            activity.replaceFragment(R.id.fragment_container, NameFragment())
+            activity.replaceFragment(R.id.fragment_container, CreateOrJoinFragment())
         }
     }
 }
