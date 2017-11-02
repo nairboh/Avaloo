@@ -31,7 +31,7 @@ class NameFragment : Fragment(), AnkoLogger {
         if (nameField.text.isNullOrBlank()) {
             toast("Please enter a name to continue")
         } else {
-            val name = nameField.text.toString()
+            name = nameField.text.toString()
             defaultSharedPreferences.edit().putString(getString(R.string.key_name), name).apply()
             info("Name for client set to " + name)
 
