@@ -1,6 +1,5 @@
 package ca.brianho.avaloo
 
-
 import android.os.Bundle
 import android.app.Fragment
 import android.view.LayoutInflater
@@ -12,10 +11,6 @@ import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.info
 import org.jetbrains.anko.toast
 
-
-/**
- * A simple [Fragment] subclass.
- */
 class NameFragment : Fragment(), AnkoLogger {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

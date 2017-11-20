@@ -5,9 +5,10 @@
     <string name="save_name">Next</string>
 
     <string name="key_name">NAME</string>
+    <string name="key_playerId">PLAYER_ID</string>
+
     <string name="join_game">Join Game</string>
     <string name="create_game">Create Game</string>
-
-
+    
     <string name="welcome_msg">Welcome %1$s,\nWhat would you like to do?</string>
 </resources>

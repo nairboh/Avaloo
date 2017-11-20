@@ -23,15 +23,30 @@ android {
 }
 
 ext {
-    anko_version = '0.10.2'
+    anko_ver = '0.10.2'
+    retrofit_ver = '2.3.0'
+    rxjava_ver = '2.1.0'
+    moshi_ver = '1.5.0'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: '1.2.0-rc-39'
+
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
-    compile "org.jetbrains.anko:anko-commons:$anko_version"
+    compile "org.jetbrains.anko:anko-commons:$anko_ver"
+    compile "com.squareup.retrofit2:retrofit:$retrofit_ver"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$retrofit_ver"
+    compile "com.squareup.retrofit2:converter-moshi:$retrofit_ver"
+    compile "com.squareup.moshi:moshi-kotlin:$moshi_ver"
+
+    compile "io.reactivex.rxjava2:rxkotlin:$rxjava_ver"
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
+    compile 'com.google.zxing:core:3.2.1'
+    compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
