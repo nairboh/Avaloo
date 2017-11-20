@@ -22,7 +22,7 @@ class CreateOrJoinFragment : Fragment() {
     }
 
     private fun handleClick(view: View) {
-        val fragment = when (view) {
+        val fragment: Fragment = when (view) {
             createGameButton -> CreateGameFragment()
             joinGameButton -> JoinGameFragment()
             else -> throw Error("View is not mapped to a destination properly!")

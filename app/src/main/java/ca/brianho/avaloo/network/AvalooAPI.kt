@@ -9,8 +9,10 @@ import retrofit2.http.*
 interface AvalooAPI {
 
     @POST("/start_game")
-    @Headers("Content-Type: application/json")
     fun startGame(@Body request: StartGameRequest) : Single<StartGameResponse>
+
+    @POST("/join_game")
+    fun joinGame(@Body request: JoinGameRequest) : Single<JoinGameResponse>
 
     companion object Factory {
         fun create() : AvalooAPI {
