@@ -35,18 +35,22 @@ class JoinGameFragment : Fragment(), AnkoLogger {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        val uuidPattern = Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+        if (data != null) {
+            val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+            val uuidPattern = Regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 
-        if (result != null) {
-            val content = result.contents
-            debug("Scanned content: " + content)
+            if (result != null) {
+                val content = result.contents
+                debug("Scanned content: " + content)
 
-            if (content.matches(uuidPattern)) {
-                sendJoinGameRequest(content)
-            } else {
-                runOnUiThread { toast("Scanned content is invalid!") }
+                if (content.matches(uuidPattern)) {
+                    sendJoinGameRequest(content)
+                } else {
+                    runOnUiThread { toast("Scanned content is invalid!") }
+                }
             }
+        } else {
+            fragmentManager.popBackStack()
         }
     }
 
