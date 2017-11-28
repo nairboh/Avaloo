@@ -1,10 +1,13 @@
-package ca.brianho.avaloo
+package ca.brianho.avaloo.fragments
 
 import android.os.Bundle
 import android.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.brianho.avaloo.R
+import ca.brianho.avaloo.utils.name
+import ca.brianho.avaloo.utils.replaceFragment
 import kotlinx.android.synthetic.main.fragment_name.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.defaultSharedPreferences

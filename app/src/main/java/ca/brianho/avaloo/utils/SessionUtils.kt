@@ -1,4 +1,4 @@
-package ca.brianho.avaloo
+package ca.brianho.avaloo.utils
 
 lateinit var name: String
 lateinit var playerId: String

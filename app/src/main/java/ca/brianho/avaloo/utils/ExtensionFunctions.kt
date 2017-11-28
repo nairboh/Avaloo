@@ -1,4 +1,4 @@
-package ca.brianho.avaloo
+package ca.brianho.avaloo.utils
 
 import android.app.Activity
 import android.app.Fragment

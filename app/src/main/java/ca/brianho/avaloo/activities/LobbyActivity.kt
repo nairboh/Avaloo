@@ -1,7 +1,13 @@
-package ca.brianho.avaloo
+package ca.brianho.avaloo.activities
 
 import android.app.Activity
 import android.os.Bundle
+import ca.brianho.avaloo.R
+import ca.brianho.avaloo.fragments.CreateOrJoinFragment
+import ca.brianho.avaloo.fragments.NameFragment
+import ca.brianho.avaloo.utils.name
+import ca.brianho.avaloo.utils.playerId
+import ca.brianho.avaloo.utils.replaceFragment
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.defaultSharedPreferences
 import java.util.*

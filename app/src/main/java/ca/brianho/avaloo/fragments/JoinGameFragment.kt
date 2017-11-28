@@ -1,4 +1,4 @@
-package ca.brianho.avaloo
+package ca.brianho.avaloo.fragments
 
 import android.os.Bundle
 import android.app.Fragment
@@ -6,7 +6,10 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.brianho.avaloo.R
+import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.network.*
+import ca.brianho.avaloo.utils.playerId
 import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

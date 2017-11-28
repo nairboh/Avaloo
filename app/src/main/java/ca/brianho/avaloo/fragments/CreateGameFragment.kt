@@ -1,13 +1,16 @@
-package ca.brianho.avaloo
+package ca.brianho.avaloo.fragments
 
 import android.os.Bundle
 import android.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.brianho.avaloo.R
+import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.network.AvalooAPI
 import ca.brianho.avaloo.network.StartGameRequest
 import ca.brianho.avaloo.network.StartGameResponse
+import ca.brianho.avaloo.utils.playerId
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
