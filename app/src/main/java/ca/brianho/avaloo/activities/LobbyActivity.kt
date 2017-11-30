@@ -3,8 +3,8 @@ package ca.brianho.avaloo.activities
 import android.app.Activity
 import android.os.Bundle
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.fragments.CreateOrJoinFragment
-import ca.brianho.avaloo.fragments.NameFragment
+import ca.brianho.avaloo.fragments.lobby.CreateOrJoinFragment
+import ca.brianho.avaloo.fragments.lobby.NameFragment
 import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.utils.playerId
 import ca.brianho.avaloo.utils.replaceFragment

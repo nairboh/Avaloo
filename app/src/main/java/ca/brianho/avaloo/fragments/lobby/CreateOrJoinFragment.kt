@@ -1,4 +1,4 @@
-package ca.brianho.avaloo.fragments
+package ca.brianho.avaloo.fragments.lobby
 
 import android.os.Bundle
 import android.app.Fragment
