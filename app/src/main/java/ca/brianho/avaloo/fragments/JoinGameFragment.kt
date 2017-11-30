@@ -10,10 +10,15 @@ import ca.brianho.avaloo.R
 import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.network.*
 import ca.brianho.avaloo.utils.playerId
+import ca.brianho.avaloo.utils.websocket
 import com.google.zxing.integration.android.IntentIntegrator
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.squareup.moshi.Moshi
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import org.jetbrains.anko.*
+import java.util.concurrent.TimeUnit
 
 class JoinGameFragment : Fragment(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,16 +63,17 @@ class JoinGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun sendJoinGameRequest(gameId: String) {
-        val server = AvalooAPI.create()
-        val joinGameRequest = JoinGameRequest(playerId, name, gameId)
+        val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
+        val request = Request.Builder().url("ws://192.168.0.15:8080/").build()
 
-        server.joinGame(joinGameRequest)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe (
-                        { handleResponseSuccess(it) },
-                        { handleResponseError(it) }
-                )
+        websocket = client.newWebSocket(request, WSListener())
+
+        val moshi = Moshi.Builder().build()
+        val adapter = moshi.adapter<JoinGameRequest>(JoinGameRequest::class.java)
+
+        val startGameRequestJson = adapter.toJson(JoinGameRequest(RequestTypes.JOIN.name, playerId, name, gameId))
+
+        websocket.send(startGameRequestJson)
     }
 
     private fun handleResponseSuccess(joinResponse: JoinGameResponse) {
@@ -84,5 +90,11 @@ class JoinGameFragment : Fragment(), AnkoLogger {
     private fun handleResponseError(error: Throwable) {
         toast("Unable to connect to the server")
         error("Network Error: ", error)
+    }
+
+    private class WSListener : WebSocketListener(), AnkoLogger {
+        override fun onMessage(webSocket: WebSocket?, text: String?) {
+            debug("Message Received: " + text)
+        }
     }
 }

@@ -24,7 +24,6 @@ android {
 
 ext {
     anko_ver = '0.10.2'
-    retrofit_ver = '2.3.0'
     rxjava_ver = '2.1.0'
     moshi_ver = '1.5.0'
 }
@@ -37,11 +36,10 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:support-v4:26.1.0'
 
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_ver"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_ver"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_ver"
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_ver"
 
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
     implementation "io.reactivex.rxjava2:rxkotlin:$rxjava_ver"
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
@@ -52,3 +50,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+
+apply plugin: 'com.google.gms.google-services'

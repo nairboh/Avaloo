@@ -8,6 +8,7 @@ import ca.brianho.avaloo.fragments.NameFragment
 import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.utils.playerId
 import ca.brianho.avaloo.utils.replaceFragment
+import ca.brianho.avaloo.utils.websocket
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.defaultSharedPreferences
 import java.util.*
@@ -27,5 +28,10 @@ class LobbyActivity : Activity(), AnkoLogger {
             name = savedName
             replaceFragment(R.id.fragment_container, CreateOrJoinFragment())
         }
+    }
+
+    override fun onBackPressed() {
+        websocket.close(1001, "Connection Terminated.")
+        super.onBackPressed()
     }
 }
