@@ -13,6 +13,7 @@ import ca.brianho.avaloo.utils.moshi
 import ca.brianho.avaloo.utils.playerId
 import ca.brianho.avaloo.utils.websocket
 import com.google.zxing.integration.android.IntentIntegrator
+import com.squareup.moshi.KotlinJsonAdapterFactory
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -64,7 +65,7 @@ class JoinGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun sendJoinGameRequest(gameId: String) {
-        moshi = Moshi.Builder().build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter = moshi.adapter<JoinGameRequest>(JoinGameRequest::class.java)
         val joinGameRequestJson = adapter.toJson(JoinGameRequest(RequestTypes.JOIN.name, playerId, name, gameId))
 

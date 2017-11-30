@@ -17,6 +17,7 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.squareup.moshi.KotlinJsonAdapterFactory
 import kotlinx.android.synthetic.main.fragment_create_game.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -38,7 +39,7 @@ class CreateGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun sendStartGameRequest() {
-        moshi = Moshi.Builder().build()
+        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter = moshi.adapter<StartGameRequest>(StartGameRequest::class.java)
         val startGameRequestJson = adapter.toJson(StartGameRequest(RequestTypes.CREATE.name, playerId, name))
 
