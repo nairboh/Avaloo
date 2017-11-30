@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.network.*
+import ca.brianho.avaloo.utils.moshi
 import ca.brianho.avaloo.utils.playerId
 import ca.brianho.avaloo.utils.websocket
 import com.google.zxing.integration.android.IntentIntegrator
@@ -63,38 +64,51 @@ class JoinGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun sendJoinGameRequest(gameId: String) {
-        val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
-        val request = Request.Builder().url("ws://192.168.0.15:8080/").build()
-
-        websocket = client.newWebSocket(request, WSListener())
-
-        val moshi = Moshi.Builder().build()
+        moshi = Moshi.Builder().build()
         val adapter = moshi.adapter<JoinGameRequest>(JoinGameRequest::class.java)
+        val joinGameRequestJson = adapter.toJson(JoinGameRequest(RequestTypes.JOIN.name, playerId, name, gameId))
 
-        val startGameRequestJson = adapter.toJson(JoinGameRequest(RequestTypes.JOIN.name, playerId, name, gameId))
+        val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
+        val request = Request.Builder().url(getString(R.string.websocket_uri)).build()
+        websocket = client.newWebSocket(request, WSListener())
+        websocket.send(joinGameRequestJson)
+    }
 
-        websocket.send(startGameRequestJson)
+
+    private fun handleResponseMessage(message: String?) {
+        if (message.isNullOrBlank()) {
+            error("WebSocket message is blank!")
+        } else {
+            val adapter = moshi.adapter<JoinGameResponse>(JoinGameResponse::class.java)
+            val joinGameResponse = adapter.fromJson(message)
+
+            if (joinGameResponse == null) {
+                handleResponseFailure()
+            } else {
+                handleResponseSuccess(joinGameResponse)
+            }
+        }
     }
 
     private fun handleResponseSuccess(joinResponse: JoinGameResponse) {
         val gameState = joinResponse.gameState
 
         if (gameState.isBlank()) {
-            error("Game State is Empty!")
+            error("Game State is blank!")
         } else {
             debug("Received gameId: " + gameState)
             runOnUiThread { toast(gameState) }
         }
     }
 
-    private fun handleResponseError(error: Throwable) {
-        toast("Unable to connect to the server")
-        error("Network Error: ", error)
+    private fun handleResponseFailure() {
+        error("Invalid WebSocket message!")
     }
 
-    private class WSListener : WebSocketListener(), AnkoLogger {
+    private inner class WSListener : WebSocketListener() {
         override fun onMessage(webSocket: WebSocket?, text: String?) {
-            debug("Message Received: " + text)
+            debug("WebSocket message received: " + text)
+            handleResponseMessage(text)
         }
     }
 }

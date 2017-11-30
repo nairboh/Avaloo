@@ -10,6 +10,7 @@ import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.network.RequestTypes
 import ca.brianho.avaloo.network.StartGameRequest
 import ca.brianho.avaloo.network.StartGameResponse
+import ca.brianho.avaloo.utils.moshi
 import ca.brianho.avaloo.utils.playerId
 import ca.brianho.avaloo.utils.websocket
 import com.google.zxing.BarcodeFormat
@@ -24,7 +25,6 @@ import okhttp3.WebSocketListener
 import org.jetbrains.anko.*
 import java.util.concurrent.TimeUnit
 import com.squareup.moshi.Moshi
-import org.json.JSONObject
 
 class CreateGameFragment : Fragment(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,36 +38,47 @@ class CreateGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun sendStartGameRequest() {
-        val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
-        val request = Request.Builder().url("ws://192.168.0.15:8080/").build()
-
-        websocket = client.newWebSocket(request, WSListener(this))
-
-        val moshi = Moshi.Builder().build()
+        moshi = Moshi.Builder().build()
         val adapter = moshi.adapter<StartGameRequest>(StartGameRequest::class.java)
-
         val startGameRequestJson = adapter.toJson(StartGameRequest(RequestTypes.CREATE.name, playerId, name))
 
+        val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
+        val request = Request.Builder().url(getString(R.string.websocket_uri)).build()
+        websocket = client.newWebSocket(request, WSListener())
         websocket.send(startGameRequestJson)
+    }
+
+    private fun handleResponseMessage(message: String?) {
+        if (message.isNullOrBlank()) {
+            error("WebSocket message is blank!")
+        } else {
+            val adapter = moshi.adapter<StartGameResponse>(StartGameResponse::class.java)
+            val startGameResponse = adapter.fromJson(message)
+
+            if (startGameResponse == null) {
+                handleResponseFailure()
+            } else {
+                handleResponseSuccess(startGameResponse)
+            }
+        }
     }
 
     private fun handleResponseSuccess(gameResponse: StartGameResponse) {
         val gameId = gameResponse.gameId
 
         if (gameId.isBlank()) {
-            error("Game Id is Empty!")
+            error("Game Id is blank!")
         } else {
-
+            generateAndDisplayQRCode(gameId)
         }
     }
 
-    private fun handleResponseError(error: Throwable) {
-        toast("Unable to connect to the server")
-        error("Network Error: ", error)
+    private fun handleResponseFailure() {
+        error("Invalid WebSocket message!")
     }
 
-    private fun generateQRCode(gameId: String) {
-        debug("Received gameId: " + gameId)
+    private fun generateAndDisplayQRCode(gameId: String) {
+        debug("Generating QRCode based on gameId: " + gameId)
 
         try {
             val bitMatrix = QRCodeWriter().encode(gameId, BarcodeFormat.QR_CODE,400,400)
@@ -78,16 +89,10 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         }
     }
 
-    private class WSListener(fragment: CreateGameFragment) : WebSocketListener(), AnkoLogger {
-        private val createGameFragment = fragment
-
+    private inner class WSListener : WebSocketListener() {
         override fun onMessage(webSocket: WebSocket?, text: String?) {
-            debug("Message received: " + text)
-
-            val json = JSONObject(text)
-            if (json["type"] == RequestTypes.CREATE.name) {
-                createGameFragment.generateQRCode(json["gameId"] as String)
-            }
+            debug("WebSocket message received: " + text)
+            handleResponseMessage(text)
         }
     }
 }

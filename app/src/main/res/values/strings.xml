@@ -12,4 +12,6 @@
     
     <string name="welcome_msg">Welcome %1$s,\nWhat would you like to do?</string>
     <string name="scan_msg">Scan the QRCode of the game you would like to join</string>
+
+    <string name="websocket_uri">ws://192.168.0.15:8080/</string>
 </resources>
