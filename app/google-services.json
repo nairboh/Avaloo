@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "284672796328",
+    "firebase_url": "https://avaloo-908e8.firebaseio.com",
+    "project_id": "avaloo-908e8",
+    "storage_bucket": "avaloo-908e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:284672796328:android:72b26cceca199ee8",
+        "android_client_info": {
+          "package_name": "ca.brianho.avaloo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "284672796328-n6lhabnd8jfqn543n8vtsnrsdltod5dt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ca.brianho.avaloo",
+            "certificate_hash": "b09b622cf0079336c44e60f0fbaa7a408c902e06"
+          }
+        },
+        {
+          "client_id": "284672796328-74h6uqpiqo4ttrsge7mloi0416cfarc5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdoOJ-F4vNtr2eSf-56Yss3I36JlI14VQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "284672796328-74h6uqpiqo4ttrsge7mloi0416cfarc5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
