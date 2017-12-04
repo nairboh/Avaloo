@@ -2,17 +2,14 @@ package ca.brianho.avaloo.fragments.lobby
 
 import android.os.Bundle
 import android.app.Fragment
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.utils.name
 import ca.brianho.avaloo.network.RequestTypes
 import ca.brianho.avaloo.network.StartGameRequest
 import ca.brianho.avaloo.network.StartGameResponse
-import ca.brianho.avaloo.utils.moshi
-import ca.brianho.avaloo.utils.playerId
-import ca.brianho.avaloo.utils.websocket
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
@@ -28,15 +25,15 @@ import java.util.concurrent.TimeUnit
 import com.squareup.moshi.Moshi
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import ca.brianho.avaloo.activities.GameActivity
+import ca.brianho.avaloo.activities.UserPromptActivity
 import ca.brianho.avaloo.adapters.PlayerListAdapter
-import ca.brianho.avaloo.network.Player
-import com.squareup.moshi.Json
-import kotlinx.android.synthetic.main.viewholder_player.*
+import ca.brianho.avaloo.fragments.game.setup.SpecialRolesFragment
+import ca.brianho.avaloo.utils.*
 import org.json.JSONArray
 import org.json.JSONObject
 
 class CreateGameFragment : Fragment(), AnkoLogger {
-    lateinit var gameId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +86,18 @@ class CreateGameFragment : Fragment(), AnkoLogger {
             when (json["type"]) {
                 "CREATE" -> handleCreateGame(message)
                 "JOIN" -> handleJoinGame(json)
+                "PRE_GAME_INFO" -> {
+                    roles = mutableListOf()
+                    val jsonArray = JSONArray(json["roles"].toString())
+
+                    for (i in 0 until jsonArray.length()) {
+                        val roleName = jsonArray.getJSONObject(i)["name"].toString()
+                        roles.add(roleName)
+                    }
+
+                    val intent = Intent(activity, GameActivity::class.java)
+                    startActivity(intent)
+                }
                 else -> handleResponseFailure()
             }
         }

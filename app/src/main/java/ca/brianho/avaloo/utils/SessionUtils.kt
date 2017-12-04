@@ -5,6 +5,9 @@ import okhttp3.WebSocket
 
 lateinit var name: String
 lateinit var playerId: String
+lateinit var gameId: String
+
+lateinit var roles: MutableList<String>
 
 lateinit var websocket: WebSocket
 lateinit var moshi: Moshi
