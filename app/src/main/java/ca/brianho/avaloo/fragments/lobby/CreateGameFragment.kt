@@ -29,12 +29,18 @@ import com.squareup.moshi.Moshi
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import ca.brianho.avaloo.adapters.PlayerListAdapter
+import ca.brianho.avaloo.network.Player
+import com.squareup.moshi.Json
+import kotlinx.android.synthetic.main.viewholder_player.*
+import org.json.JSONArray
 import org.json.JSONObject
 
 class CreateGameFragment : Fragment(), AnkoLogger {
+    lateinit var gameId: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sendStartGameRequest()
+        sendCreateGameRequest()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup,
@@ -46,9 +52,11 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         super.onViewCreated(view, savedInstanceState)
         playerRecyclerView.adapter = PlayerListAdapter()
         playerRecyclerView.layoutManager = LinearLayoutManager(activity)
+
+        startGameButton.setOnClickListener{ sendStartGameRequest() }
     }
 
-    private fun sendStartGameRequest() {
+    private fun sendCreateGameRequest() {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter = moshi.adapter<StartGameRequest>(StartGameRequest::class.java)
         val startGameRequestJson = adapter.toJson(StartGameRequest(RequestTypes.CREATE.name, playerId, name))
@@ -57,6 +65,20 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         val request = Request.Builder().url(getString(R.string.websocket_uri)).build()
         websocket = client.newWebSocket(request, WSListener())
         websocket.send(startGameRequestJson)
+    }
+
+    private fun sendStartGameRequest() {
+        val playerList = mutableListOf(playerId)
+        (playerRecyclerView.adapter as PlayerListAdapter).getItems().forEach {
+            playerList.add(it.playerId)
+        }
+        val jsonArray = JSONArray(playerList)
+        val json = JSONObject()
+        json.put("type", "PRE_GAME_INFO")
+        json.put("playerOrder", jsonArray)
+        json.put("gameId", gameId)
+        Log.e("JSON STRING", json.toString())
+        websocket.send(json.toString())
     }
 
     private fun handleResponseMessage(message: String?) {
@@ -85,17 +107,17 @@ class CreateGameFragment : Fragment(), AnkoLogger {
 
     private fun handleJoinGame(json: JSONObject) {
         runOnUiThread {
-            (playerRecyclerView.adapter as PlayerListAdapter).add(json["alias"] as String)
+            (playerRecyclerView.adapter as PlayerListAdapter).add(json)
         }
     }
 
     private fun handleResponseSuccess(gameResponse: StartGameResponse) {
-        val gameId = gameResponse.gameId
+        gameId = gameResponse.gameId
 
         if (gameId.isBlank()) {
             error("Game Id is blank!")
         } else {
-            generateAndDisplayQRCode(gameId)
+            generateAndDisplayQRCode()
         }
     }
 
@@ -103,7 +125,7 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         error("Invalid WebSocket message!")
     }
 
-    private fun generateAndDisplayQRCode(gameId: String) {
+    private fun generateAndDisplayQRCode() {
         debug("Generating QRCode based on gameId: " + gameId)
 
         try {

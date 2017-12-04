@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 
 enum class RequestTypes { CREATE, JOIN, START }
 
-data class Player(@Json(name = "alias") val type: String,
+data class Player(@Json(name = "alias") val alias: String,
                   @Json(name = "playerId") val playerId: String)
 
 data class StartGameRequest(@Json(name = "type") val type: String,

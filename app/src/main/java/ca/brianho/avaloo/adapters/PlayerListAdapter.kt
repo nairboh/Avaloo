@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
+import ca.brianho.avaloo.network.Player
 import kotlinx.android.synthetic.main.viewholder_player.view.*
+import org.json.JSONObject
 import java.util.*
 
 class PlayerListAdapter : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder>() {
-    private val mItems: MutableList<String>
+    private val mItems: MutableList<Player>
     private val mItemTouchHelper: ItemTouchHelper
 
     init {
@@ -52,17 +54,20 @@ class PlayerListAdapter : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolde
     }
 
     override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
-        val alias = mItems[position]
-        holder.alias.text = alias
+        holder.alias.text = mItems[position].alias
     }
 
     override fun getItemCount(): Int = mItems.size
 
-    fun add(alias: String) {
+    fun add(playerJson: JSONObject) {
         val positionToInsert = itemCount
-        mItems.add(alias)
+        val alias = playerJson["alias"] as String
+        val playerId = playerJson["playerId"] as String
+        mItems.add(Player(alias, playerId))
         notifyItemInserted(positionToInsert)
     }
+
+    fun getItems(): MutableList<Player> = mItems
 
     class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val alias = itemView.alias
