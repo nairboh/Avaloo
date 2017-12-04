@@ -14,4 +14,5 @@
     <string name="scan_msg">Scan the QRCode of the game you would like to join</string>
 
     <string name="websocket_uri">ws://192.168.0.15:8080/</string>
+    <string name="desc_qrcode">QRCode containing gameId</string>
 </resources>

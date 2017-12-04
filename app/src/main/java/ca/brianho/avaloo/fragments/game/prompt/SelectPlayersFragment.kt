@@ -8,9 +8,9 @@ import android.view.ViewGroup
 
 import ca.brianho.avaloo.R
 
-class SelectPartyFragment : Fragment() {
+class SelectPlayersFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle): View? {
-        return inflater.inflate(R.layout.fragment_select_party, container, false)
+        return inflater.inflate(R.layout.fragment_select_players, container, false)
     }
 }

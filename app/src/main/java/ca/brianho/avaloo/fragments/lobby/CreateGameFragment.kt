@@ -26,6 +26,10 @@ import okhttp3.WebSocketListener
 import org.jetbrains.anko.*
 import java.util.concurrent.TimeUnit
 import com.squareup.moshi.Moshi
+import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
+import ca.brianho.avaloo.adapters.PlayerListAdapter
+import org.json.JSONObject
 
 class CreateGameFragment : Fragment(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +40,12 @@ class CreateGameFragment : Fragment(), AnkoLogger {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup,
                               savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_create_game, container, false)
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        playerRecyclerView.adapter = PlayerListAdapter()
+        playerRecyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
     private fun sendStartGameRequest() {
@@ -53,14 +63,29 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         if (message.isNullOrBlank()) {
             error("WebSocket message is blank!")
         } else {
-            val adapter = moshi.adapter<StartGameResponse>(StartGameResponse::class.java)
-            val startGameResponse = adapter.fromJson(message)
-
-            if (startGameResponse == null) {
-                handleResponseFailure()
-            } else {
-                handleResponseSuccess(startGameResponse)
+            val json = JSONObject(message)
+            when (json["type"]) {
+                "CREATE" -> handleCreateGame(message)
+                "JOIN" -> handleJoinGame(json)
+                else -> handleResponseFailure()
             }
+        }
+    }
+
+    private fun handleCreateGame(message: String?) {
+        val adapter = moshi.adapter<StartGameResponse>(StartGameResponse::class.java)
+        val startGameResponse = adapter.fromJson(message)
+
+        if (startGameResponse == null) {
+            handleResponseFailure()
+        } else {
+            handleResponseSuccess(startGameResponse)
+        }
+    }
+
+    private fun handleJoinGame(json: JSONObject) {
+        runOnUiThread {
+            (playerRecyclerView.adapter as PlayerListAdapter).add(json["alias"] as String)
         }
     }
 
@@ -84,7 +109,7 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         try {
             val bitMatrix = QRCodeWriter().encode(gameId, BarcodeFormat.QR_CODE,400,400)
             val bitmap = BarcodeEncoder().createBitmap(bitMatrix)
-            runOnUiThread { qrcode.setImageBitmap(bitmap) }
+            runOnUiThread { expanded_qrcode.setImageBitmap(bitmap) }
         } catch (e: WriterException) {
             error("QRCode generation error: ", e)
         }
@@ -92,7 +117,7 @@ class CreateGameFragment : Fragment(), AnkoLogger {
 
     private inner class WSListener : WebSocketListener() {
         override fun onMessage(webSocket: WebSocket?, text: String?) {
-            debug("WebSocket message received: " + text)
+            Log.e("dam","WebSocket message received: " + text)
             handleResponseMessage(text)
         }
     }
