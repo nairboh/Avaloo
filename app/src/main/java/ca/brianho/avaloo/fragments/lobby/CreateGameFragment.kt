@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.network.RequestTypes
-import ca.brianho.avaloo.network.StartGameRequest
-import ca.brianho.avaloo.network.StartGameResponse
+import ca.brianho.avaloo.network.CreateGameRequest
+import ca.brianho.avaloo.network.CreateGameResponse
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
@@ -26,14 +26,23 @@ import com.squareup.moshi.Moshi
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import ca.brianho.avaloo.activities.GameActivity
-import ca.brianho.avaloo.activities.UserPromptActivity
 import ca.brianho.avaloo.adapters.PlayerListAdapter
-import ca.brianho.avaloo.fragments.game.setup.SpecialRolesFragment
 import ca.brianho.avaloo.utils.*
 import org.json.JSONArray
 import org.json.JSONObject
+import android.animation.Animator
+import ca.brianho.avaloo.network.Role
+
 
 class CreateGameFragment : Fragment(), AnkoLogger {
+    // Hold a reference to the current animator,
+    // so that it can be canceled mid-way.
+    private var mCurrentAnimator: Animator? = null
+
+    // The system "short" animation time duration, in milliseconds. This
+    // duration is ideal for subtle animations or animations that occur
+    // very frequently.
+    private val mShortAnimationDuration: Long = 300
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,13 +59,13 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         playerRecyclerView.adapter = PlayerListAdapter()
         playerRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        startGameButton.setOnClickListener{ sendStartGameRequest() }
+        startGameButton.setOnClickListener { sendStartGameRequest() }
     }
 
     private fun sendCreateGameRequest() {
         moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val adapter = moshi.adapter<StartGameRequest>(StartGameRequest::class.java)
-        val startGameRequestJson = adapter.toJson(StartGameRequest(RequestTypes.CREATE.name, playerId, name))
+        val adapter = moshi.adapter<CreateGameRequest>(CreateGameRequest::class.java)
+        val startGameRequestJson = adapter.toJson(CreateGameRequest(RequestTypes.CREATE.name, playerId, name))
 
         val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
         val request = Request.Builder().url(getString(R.string.websocket_uri)).build()
@@ -69,13 +78,18 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         (playerRecyclerView.adapter as PlayerListAdapter).getItems().forEach {
             playerList.add(it.playerId)
         }
-        val jsonArray = JSONArray(playerList)
-        val json = JSONObject()
-        json.put("type", "PRE_GAME_INFO")
-        json.put("playerOrder", jsonArray)
-        json.put("gameId", gameId)
-        Log.e("JSON STRING", json.toString())
-        websocket.send(json.toString())
+
+        if (playerList.size < createGameResponse.minNumPlayers) {
+            toast("Not enough players to start the game!")
+        } else {
+            val jsonArray = JSONArray(playerList)
+            val json = JSONObject()
+            json.put("type", "PRE_GAME_INFO")
+            json.put("playerOrder", jsonArray)
+            json.put("gameId", createGameResponse.gameId)
+            Log.e("JSON STRING", json.toString())
+            websocket.send(json.toString())
+        }
     }
 
     private fun handleResponseMessage(message: String?) {
@@ -90,9 +104,12 @@ class CreateGameFragment : Fragment(), AnkoLogger {
                     roles = mutableListOf()
                     val jsonArray = JSONArray(json["roles"].toString())
 
+                    numGood = Integer.parseInt(json["numGood"].toString())
+                    numEvil = Integer.parseInt(json["numEvil"].toString())
+
+                    val adapter = moshi.adapter<Role>(Role::class.java)
                     for (i in 0 until jsonArray.length()) {
-                        val roleName = jsonArray.getJSONObject(i)["name"].toString()
-                        roles.add(roleName)
+                        roles.add(adapter.fromJson(jsonArray.getJSONObject(i).toString())!!)
                     }
 
                     val intent = Intent(activity, GameActivity::class.java)
@@ -104,7 +121,7 @@ class CreateGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun handleCreateGame(message: String?) {
-        val adapter = moshi.adapter<StartGameResponse>(StartGameResponse::class.java)
+        val adapter = moshi.adapter<CreateGameResponse>(CreateGameResponse::class.java)
         val startGameResponse = adapter.fromJson(message)
 
         if (startGameResponse == null) {
@@ -120,10 +137,10 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         }
     }
 
-    private fun handleResponseSuccess(gameResponse: StartGameResponse) {
-        gameId = gameResponse.gameId
+    private fun handleResponseSuccess(gameResponse: CreateGameResponse) {
+        createGameResponse = gameResponse
 
-        if (gameId.isBlank()) {
+        if (createGameResponse.gameId.isBlank()) {
             error("Game Id is blank!")
         } else {
             generateAndDisplayQRCode()
@@ -135,12 +152,15 @@ class CreateGameFragment : Fragment(), AnkoLogger {
     }
 
     private fun generateAndDisplayQRCode() {
+        val gameId = createGameResponse.gameId
         debug("Generating QRCode based on gameId: " + gameId)
 
         try {
             val bitMatrix = QRCodeWriter().encode(gameId, BarcodeFormat.QR_CODE,400,400)
             val bitmap = BarcodeEncoder().createBitmap(bitMatrix)
-            runOnUiThread { expanded_qrcode.setImageBitmap(bitmap) }
+            runOnUiThread {
+                expanded_qrcode.setImageBitmap(bitmap)
+            }
         } catch (e: WriterException) {
             error("QRCode generation error: ", e)
         }

@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.utils.websocket
 import org.jetbrains.anko.*
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import ca.brianho.avaloo.adapters.SpecialRolesAdapter
-import ca.brianho.avaloo.utils.gameId
-import ca.brianho.avaloo.utils.roles
+import ca.brianho.avaloo.utils.*
 import kotlinx.android.synthetic.main.fragment_special_roles.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -25,7 +23,7 @@ class SpecialRolesFragment : Fragment(), AnkoLogger {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = SpecialRolesAdapter(roles)
+        recyclerView.adapter = SpecialRolesAdapter(roles, numGood, numEvil)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         submitButton.setOnClickListener{ sendFilteredRoles() }
     }
@@ -36,7 +34,7 @@ class SpecialRolesFragment : Fragment(), AnkoLogger {
         val json = JSONObject()
         json.put("type", "FILTERED_ROLES")
         json.put("roles", jsonArray)
-        json.put("gameId", gameId)
+        json.put("gameId", createGameResponse.gameId)
         Log.e("JSON STRING", json.toString())
 
         websocket.send(json.toString())

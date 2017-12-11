@@ -3,18 +3,23 @@
 
     <string name="name_hint">Enter Name</string>
     <string name="save_name">Next</string>
+    <string name="join_game">Join Game</string>
+    <string name="create_game">Create Game</string>
+    <string name="start_game">Start Game</string>
+    <string name="submit">Submit</string>
 
     <string name="key_name">NAME</string>
     <string name="key_playerId">PLAYER_ID</string>
-
-    <string name="join_game">Join Game</string>
-    <string name="create_game">Create Game</string>
+    <string name="key_team_good">Good</string>
+    <string name="key_team_evil">Evil</string>
 
     <string name="welcome_msg">Welcome %1$s,\nWhat would you like to do?</string>
     <string name="scan_msg">Scan the QRCode of the game you would like to join</string>
+    <string name="instruction_special_role">Please select any special characters you would like to include in the game!</string>
+    <string name="max_special_roles_selected">You have exceeded the max number of %1$s players!"</string>
 
     <string name="websocket_uri">ws://192.168.0.15:8080/</string>
+
     <string name="desc_qrcode">QRCode containing gameId</string>
-    <string name="start_game">Start Game</string>
-    <string name="submit">Submit</string>
+    <string name="error_invalid_team">Invalid team!</string>
 </resources>
