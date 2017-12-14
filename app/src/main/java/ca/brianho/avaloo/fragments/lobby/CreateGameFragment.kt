@@ -80,7 +80,7 @@ class CreateGameFragment : Fragment(), AnkoLogger, WSInterface {
             when (json["type"]) {
                 MessageType.CREATE.name -> handleCreateGameResponse(message)
                 MessageType.JOIN.name -> handlePlayerJoinResponse(message)
-                "PRE_GAME_INFO" -> {
+                MessageType.START.name -> {
                     roles = mutableListOf()
                     val jsonArray = JSONArray(json["roles"].toString())
 
@@ -110,8 +110,9 @@ class CreateGameFragment : Fragment(), AnkoLogger, WSInterface {
 
     private fun handleCreateGameResponse(message: String?) {
         try {
-            createGameResponse = moshi.fromJson(message)
-            if (createGameResponse.gameId.isBlank()) {
+            createGameResponse = moshi.fromJson<CreateGameResponse>(message)
+            gameId = createGameResponse.gameId
+            if (gameId.isBlank()) {
                 error("Game Id is blank!")
             } else {
                 generateAndDisplayQRCode()
@@ -137,7 +138,6 @@ class CreateGameFragment : Fragment(), AnkoLogger, WSInterface {
     }
 
     private fun generateAndDisplayQRCode() {
-        val gameId = createGameResponse.gameId
         debug("Generating QRCode based on gameId: " + gameId)
 
         try {

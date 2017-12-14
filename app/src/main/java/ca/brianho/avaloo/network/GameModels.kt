@@ -8,9 +8,13 @@ enum class QuestState { PASS, FAIL }
 data class Player(@Json(name = "alias") val alias: String,
                   @Json(name = "playerId") val playerId: String)
 
-data class Role(@Json(name = "name") val name: String,
+data class Role1(@Json(name = "name") val name: String,
                 @Json(name = "team") val team: String,
-                @Json(name = "knowledge") val knowledge: List<Player>)
+                @Json(name = "knowledge") val knowledge: List<String>)
+
+
+data class Role(@Json(name = "name") val name: String,
+                @Json(name = "team") val team: String)
 
 data class Quest(@Json(name = "questNum") val questNum: Int,
                  @Json(name = "questLead") val questLead: Player,

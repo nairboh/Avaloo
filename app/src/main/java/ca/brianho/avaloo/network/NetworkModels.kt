@@ -34,3 +34,10 @@ data class StartGameRequest(@Json(name = "type") val type: String = MessageType.
 data class StartGameResponse(@Json(name = "numGood") val numGood: Int,
                              @Json(name = "numEvil") val numEvil: Int,
                              @Json(name = "roles") val roles: List<Role>)
+
+data class PartyChoiceRequest(@Json(name = "type") val type: String = MessageType.PARTY_CHOICE.name,
+                              @Json(name = "gameId") val gameId: String,
+                              @Json(name = "members") val members: MutableSet<Player>)
+
+data class ClientSetupResponse(@Json(name = "role") val role: Role1,
+                               @Json(name = "playerList") val playerList: List<Player>)

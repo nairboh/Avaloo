@@ -36,4 +36,6 @@
     <string name="settings">Settings</string>
     <string name="generating_qr_game_code">Generating QR Game Code</string>
     <string name="player_order">%1d. %2s</string>
+
+    <string name="role_info">Your role is: %1s\nYour team is: %2s\nYour teammates are: %3s</string>
 </resources>

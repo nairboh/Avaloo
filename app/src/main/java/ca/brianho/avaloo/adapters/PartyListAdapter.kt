@@ -10,10 +10,10 @@ import ca.brianho.avaloo.network.Player
 import kotlinx.android.synthetic.main.viewholder_roles.view.*
 import org.jetbrains.anko.toast
 
-class PartyListAdapter(playerList: MutableList<Player>, numMembers: Int) :
+class PartyListAdapter(playerList: List<Player>, numMembers: Int) :
         RecyclerView.Adapter<PartyListAdapter.PartyPlayerViewHolder>() {
     private val mPlayerList = playerList
-    private val mSelectedPlayers = mutableSetOf<String>()
+    private val mSelectedPlayers = mutableSetOf<Player>()
 
     private val mTotalMemberNum = numMembers
     private var mNumSelectedPlayers = 0
@@ -54,15 +54,15 @@ class PartyListAdapter(playerList: MutableList<Player>, numMembers: Int) :
 
     private fun handlePlayerSelected(player: Player, selected: Boolean) {
         if (selected) {
-            mSelectedPlayers.add(player.playerId)
+            mSelectedPlayers.add(player)
             mNumSelectedPlayers++
         } else {
-            mSelectedPlayers.remove(player.playerId)
+            mSelectedPlayers.remove(player)
             mNumSelectedPlayers--
         }
     }
 
-    fun getSelectedPlayers(): MutableSet<String> = mSelectedPlayers
+    fun getSelectedPlayers(): MutableSet<Player> = mSelectedPlayers
 
     class PartyPlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.name

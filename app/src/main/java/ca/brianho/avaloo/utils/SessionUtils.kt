@@ -18,12 +18,14 @@ var numEvil = 0
 
 lateinit var gameInstance: Game
 
+lateinit var gameId: String
+
 lateinit var createGameResponse: CreateGameResponse
 
 lateinit var boardFragment: BoardFragment
 lateinit var roleFragment: RoleFragment
 
-lateinit var playerMap: Map<String, String>
+lateinit var playerList: List<Player>
 
 lateinit var websocket: WebSocket
 lateinit var wsListener: WSListener

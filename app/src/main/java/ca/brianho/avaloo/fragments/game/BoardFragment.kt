@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.activities.UserPromptActivity
 import ca.brianho.avaloo.adapters.PartyListAdapter
+import ca.brianho.avaloo.network.PartyChoiceRequest
 import ca.brianho.avaloo.network.Player
 import ca.brianho.avaloo.network.WSInterface
 import ca.brianho.avaloo.utils.*
@@ -21,7 +22,6 @@ import org.json.JSONObject
 
 class BoardFragment : Fragment(), WSInterface {
     private var message = ""
-    private lateinit var listPlayers: MutableList<Player>
     private var numMembers = 0
 
     override fun handleResponseMessage(message: String?) {
@@ -32,27 +32,11 @@ class BoardFragment : Fragment(), WSInterface {
 
         when (json["type"].toString()) {
             "PARTY_VOTE" -> {
-                val json2 = JSONArray(json["playerList"].toString())
-
-                for (i in 0 until json2.length()) {
-                    Log.e("DAM", playerMap[json2[i].toString()])
-                }
-
                 val intent = Intent(activity, UserPromptActivity::class.java)
                 intent.putExtra("TYPE", "VOTE")
                 startActivity(intent)
             }
             "QUEST_INFO" -> {
-                listPlayers = mutableListOf()
-
-                Log.e("DAM", "ENTRY cxvx PLAYER")
-
-                for (entry in playerMap) {
-                    Log.e("DAM", "ENTRY INTO PLAYER")
-
-                    listPlayers.add(Player(entry.value, entry.key))
-                }
-
                 numMembers = Integer.parseInt(json["partySize"].toString())
             }
         }
@@ -65,23 +49,17 @@ class BoardFragment : Fragment(), WSInterface {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = PartyListAdapter(listPlayers, numMembers)
+        recyclerView.adapter = PartyListAdapter(playerList, numMembers)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.visibility = View.VISIBLE
 
-        button.setOnClickListener {
-            val selectedPlayers = (recyclerView.adapter as PartyListAdapter).getSelectedPlayers()
-
-            val jsonArray = JSONArray(selectedPlayers)
-            val json2 = JSONObject()
-            json2.put("type", "PARTY_CHOICE")
-            json2.put("playerList", jsonArray)
-            json2.put("gameId", createGameResponse.gameId)
-            Log.e("JSON STRING", json2.toString())
-
-            websocket.send(json2.toString())
-        }
-
+        button.setOnClickListener { sendPartyChoiceRequest() }
         questInfoTextView.text = message
+    }
+
+    private fun sendPartyChoiceRequest() {
+        val members = (recyclerView.adapter as PartyListAdapter).getSelectedPlayers()
+        val partyChoiceRequest = PartyChoiceRequest(gameId = gameId, members = members)
+        websocket.sendJson(partyChoiceRequest)
     }
 }
