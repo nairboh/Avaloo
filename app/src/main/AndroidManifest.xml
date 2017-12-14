@@ -23,8 +23,11 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
-        <activity android:name=".activities.GameActivity" />
-        <activity android:name=".activities.UserPromptActivity"></activity>
+        <activity android:name=".activities.GameActivity"
+            android:theme="@style/Theme.AppCompat"/>
+        <activity android:name=".activities.UserPromptActivity">
+
+        </activity>
     </application>
 
 </manifest>

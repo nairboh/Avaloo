@@ -14,12 +14,26 @@
     <string name="key_team_evil">Evil</string>
 
     <string name="welcome_msg">Welcome %1$s,\nWhat would you like to do?</string>
-    <string name="scan_msg">Scan the QRCode of the game you would like to join</string>
-    <string name="instruction_special_role">Please select any special characters you would like to include in the game!</string>
     <string name="max_special_roles_selected">You have exceeded the max number of %1$s players!"</string>
 
     <string name="websocket_uri">ws://192.168.0.15:8080/</string>
 
     <string name="desc_qrcode">QRCode containing gameId</string>
     <string name="error_invalid_team">Invalid team!</string>
+    <string name="game">Game</string>
+    <string name="role">Role</string>
+    <string name="info_quest_num">Quest Number:</string>
+    <string name="info_quest_lead">is quest leader</string>
+    <string name="info_quest_declines">TextView</string>
+    <string name="decline">Decline</string>
+    <string name="approve">Approve</string>
+    <string name="key_player">PLAYER</string>
+
+    <string name="instruction_valid_name">Please enter a valid name to continue</string>
+    <string name="instruction_special_role">Please select any special characters you would like to include in the game!</string>
+    <string name="instruction_set_player_order">Hold and drag players to reassign play order</string>
+    <string name="scan_msg">Scan the QRCode of the game you would like to join</string>
+    <string name="settings">Settings</string>
+    <string name="generating_qr_game_code">Generating QR Game Code</string>
+    <string name="player_order">%1d. %2s</string>
 </resources>

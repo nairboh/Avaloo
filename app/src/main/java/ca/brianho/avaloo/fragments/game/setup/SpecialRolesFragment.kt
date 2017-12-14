@@ -25,7 +25,10 @@ class SpecialRolesFragment : Fragment(), AnkoLogger {
         super.onViewCreated(view, savedInstanceState)
         recyclerView.adapter = SpecialRolesAdapter(roles, numGood, numEvil)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        submitButton.setOnClickListener{ sendFilteredRoles() }
+        submitButton.setOnClickListener {
+            sendFilteredRoles()
+            activity.finish()
+        }
     }
 
     private fun sendFilteredRoles() {

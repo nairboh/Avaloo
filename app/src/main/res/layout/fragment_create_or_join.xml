@@ -3,35 +3,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ca.brianho.avaloo.fragments.lobby.CreateOrJoinFragment">
+    tools:context="ca.brianho.avaloo.fragments.lobby.LobbyFragment">
 
     <Button
         android:id="@+id/createGameButton"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/create_game"
         app:layout_constraintBottom_toTopOf="@+id/joinGameButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcomeText" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomeText"
+        app:layout_constraintVertical_bias="0.784" />
 
     <Button
         android:id="@+id/joinGameButton"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/join_game"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/settingsButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createGameButton" />
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/joinGameButton"
+        app:layout_constraintVertical_bias="0.086" />
 
     <TextView
         android:id="@+id/welcomeText"
@@ -39,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="88dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

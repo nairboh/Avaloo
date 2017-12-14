@@ -11,15 +11,14 @@
 
         <ImageView
             android:id="@+id/expanded_qrcode"
-            android:layout_width="383dp"
-            android:layout_height="281dp"
+            android:layout_width="390dp"
+            android:layout_height="222dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/desc_qrcode"
-            app:layout_constraintBottom_toTopOf="@+id/playerRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.508"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/startGameButton"
@@ -28,22 +27,71 @@
             android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/start_game"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.518"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playerRecyclerView"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ProgressBar
+            android:id="@+id/qrCodeProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="76dp"
+            app:layout_constraintBottom_toTopOf="@+id/playerListInstructions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/qrCodeGeneratingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/generating_qr_game_code"
+            app:layout_constraintBottom_toBottomOf="@+id/expanded_qrcode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/qrCodeProgressBar"
+            app:layout_constraintVertical_bias="0.135" />
+
+        <TextView
+            android:id="@+id/playerListInstructions"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/instruction_set_player_order"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/expanded_qrcode" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/playerRecyclerView"
             android:layout_width="351dp"
-            android:layout_height="200dp"
+            android:layout_height="320dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/startGameButton"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.529"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/expanded_qrcode"
+            app:layout_constraintVertical_bias="0.809" />
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>

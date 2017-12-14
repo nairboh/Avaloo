@@ -1,5 +1,6 @@
 package ca.brianho.avaloo.adapters
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
@@ -11,12 +12,14 @@ import kotlinx.android.synthetic.main.viewholder_player.view.*
 import org.json.JSONObject
 import java.util.*
 
-class PlayerListAdapter : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder>() {
-    private val mItems: MutableList<Player>
+class PlayerListAdapter(player: Player) :
+        RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolder>() {
+    private val mItems: MutableList<Player> = mutableListOf(player)
     private val mItemTouchHelper: ItemTouchHelper
 
+    private lateinit var context: Context
+
     init {
-        mItems = mutableListOf()
         mItemTouchHelper = ItemTouchHelper(
             object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) { }
@@ -26,6 +29,10 @@ class PlayerListAdapter : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolde
                                     target: RecyclerView.ViewHolder): Boolean {
                     val fromPosition = viewHolder.adapterPosition
                     val toPosition = target.adapterPosition
+
+                    setViewHolderText(viewHolder, toPosition, mItems[fromPosition].alias)
+                    setViewHolderText(target, fromPosition, mItems[toPosition].alias)
+
                     if (fromPosition < toPosition) {
                         for (i in fromPosition until toPosition) {
                             Collections.swap(mItems, i, i + 1)
@@ -38,6 +45,11 @@ class PlayerListAdapter : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolde
                     notifyItemMoved(fromPosition, toPosition)
                     return true
                 }
+
+                override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
+                    super.clearView(recyclerView, viewHolder)
+                    notifyDataSetChanged()
+                }
             }
         )
 
@@ -49,25 +61,29 @@ class PlayerListAdapter : RecyclerView.Adapter<PlayerListAdapter.PlayerViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayerViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
+        context = parent.context
+        val layoutInflater = LayoutInflater.from(context)
         return PlayerViewHolder(layoutInflater.inflate(R.layout.viewholder_player, parent, false))
     }
 
     override fun onBindViewHolder(holder: PlayerViewHolder, position: Int) {
-        holder.alias.text = mItems[position].alias
+        setViewHolderText(holder, position, mItems[position].alias)
     }
 
     override fun getItemCount(): Int = mItems.size
 
-    fun add(playerJson: JSONObject) {
+    fun add(player: Player) {
         val positionToInsert = itemCount
-        val alias = playerJson["alias"] as String
-        val playerId = playerJson["playerId"] as String
-        mItems.add(Player(alias, playerId))
+        mItems.add(player)
         notifyItemInserted(positionToInsert)
     }
 
     fun getItems(): MutableList<Player> = mItems
+
+    private fun setViewHolderText(holder: RecyclerView.ViewHolder, position: Int, alias: String) {
+        (holder as PlayerViewHolder).alias.text =
+                context.getString(R.string.player_order, position + 1, alias)
+    }
 
     class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val alias = itemView.alias
