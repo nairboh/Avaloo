@@ -1,4 +1,4 @@
-package ca.brianho.avaloo.network
+package ca.brianho.avaloo.models
 
 import com.squareup.moshi.Json
 
@@ -21,8 +21,13 @@ data class Quest(@Json(name = "questNum") val questNum: Int,
                  @Json(name = "questState") val questState: String,
                  @Json(name = "partyMembers") val partyMembers: List<Player>)
 
-data class Game(@Json(name = "playerList") val playerList: List<Player>,
-                @Json(name = "questList") val questList: MutableList<Quest>,
-                @Json(name = "currentPlayer") val currentPlayer: Player,
-                @Json(name = "currentRole") val currentRole: Role,
-                @Json(name = "gameId") val gameId: String)
+
+object Game {
+    lateinit var gameId: String
+    lateinit var currentPlayer: Player
+    var minNumPlayers = 5
+
+    lateinit var currentRole: Role
+    lateinit var playerList: List<Player>
+    val questList: MutableList<Quest> = mutableListOf()
+}

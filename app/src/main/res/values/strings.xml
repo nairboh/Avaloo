@@ -16,7 +16,7 @@
     <string name="welcome_msg">Welcome %1$s,\nWhat would you like to do?</string>
     <string name="max_special_roles_selected">You have exceeded the max number of %1$s players!"</string>
 
-    <string name="websocket_uri">ws://192.168.0.15:8080/</string>
+    <string name="websocket_uri">ws://10.0.0.124:8080/</string>
 
     <string name="desc_qrcode">QRCode containing gameId</string>
     <string name="error_invalid_team">Invalid team!</string>
@@ -37,5 +37,10 @@
     <string name="generating_qr_game_code">Generating QR Game Code</string>
     <string name="player_order">%1d. %2s</string>
 
-    <string name="role_info">Your role is: %1s\nYour team is: %2s\nYour teammates are: %3s</string>
+    <string name="role_info">Your role is: %1s\nYour team is: %2s\nYou can see: %3s</string>
+    <string name="key_type">type</string>
+    <string name="key_select_special">SELECT_SPECIAL</string>
+
+    <string name="quest_info">Quest #%1d\n%2s is choosing, they may pick %3d players to go on this quest\nThis quest has failed %4d times.</string>
+    <string name="join_wait_msg">Waiting for the game to start...</string>
 </resources>

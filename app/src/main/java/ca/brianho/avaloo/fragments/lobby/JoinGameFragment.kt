@@ -7,25 +7,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.network.*
+import ca.brianho.avaloo.activities.GameActivity
+import ca.brianho.avaloo.models.Game
+import ca.brianho.avaloo.models.JoinGameRequest
+import ca.brianho.avaloo.models.JoinGameResponse
+import ca.brianho.avaloo.models.MessageType
 import ca.brianho.avaloo.utils.*
 import com.google.zxing.integration.android.IntentIntegrator
-import com.squareup.moshi.KotlinJsonAdapterFactory
-import com.squareup.moshi.Moshi
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import org.jetbrains.anko.*
-import java.util.concurrent.TimeUnit
+import org.json.JSONObject
 
-class JoinGameFragment : Fragment(), AnkoLogger, WSInterface {
+class JoinGameFragment : Fragment(), AnkoLogger {
+    private lateinit var rxBusDisposable: Disposable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        rxBusDisposable = RxEventBus.subscribe(Consumer { handleResponseMessage(it) })
         setupAndStartScanner()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_join_game, container, false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::rxBusDisposable.isInitialized) {
+            rxBusDisposable.dispose()
+        }
     }
 
     private fun setupAndStartScanner() {
@@ -49,9 +61,13 @@ class JoinGameFragment : Fragment(), AnkoLogger, WSInterface {
                 debug("Scanned content: " + content)
 
                 if (content.matches(uuidPattern)) {
-                    sendJoinGameRequest(content)
+                    //Temp
+                    Game.gameId = content
+                    MoshiInstance.sendRequestAsJson(
+                        JoinGameRequest(MessageType.JOIN.name, player, content)
+                    )
                 } else {
-                    runOnUiThread { toast("Scanned content is invalid!") }
+                    toast("Scanned content is invalid!")
                 }
             }
         } else {
@@ -59,35 +75,24 @@ class JoinGameFragment : Fragment(), AnkoLogger, WSInterface {
         }
     }
 
-    private fun sendJoinGameRequest(gameId: String) {
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-        val adapter = moshi.adapter<JoinGameRequest>(JoinGameRequest::class.java)
-        val joinGameRequestJson = adapter.toJson(JoinGameRequest(MessageType.JOIN.name, playerId, name, gameId))
-
-        val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
-        val request = Request.Builder().url(getString(R.string.websocket_uri)).build()
-
-        wsListener = WSListener()
-        wsListener.setInterface(this)
-
-        websocket = client.newWebSocket(request, wsListener)
-        websocket.send(joinGameRequestJson)
+    private fun handleResponseMessage(message: String) {
+        when (JSONObject(message)[getString(R.string.key_type)]) {
+            MessageType.JOIN.name -> handleJoinGameResponse(message)
+            MessageType.CLIENT_SETUP.name -> handleClientSetupResponse()
+            else -> error("Unsupported message type")
+        }
     }
 
-
-    override fun handleResponseMessage(message: String?) {
-        if (message.isNullOrBlank()) {
-            error("WebSocket message is blank!")
-        } else {
-            val adapter = moshi.adapter<JoinGameResponse>(JoinGameResponse::class.java)
-            val joinGameResponse = adapter.fromJson(message)
-
-            if (joinGameResponse == null) {
-                handleResponseFailure()
-            } else {
-                handleResponseSuccess(joinGameResponse)
-            }
+    private fun handleJoinGameResponse(message: String) {
+        try {
+            handleResponseSuccess(MoshiInstance.fromJson(message))
+        } catch (e: NullPointerException) {
+            error("Unable to join game: ", e)
         }
+    }
+
+    private fun handleClientSetupResponse() {
+        startActivity<GameActivity>()
     }
 
     private fun handleResponseSuccess(joinResponse: JoinGameResponse) {
@@ -99,9 +104,5 @@ class JoinGameFragment : Fragment(), AnkoLogger, WSInterface {
             debug("Received gameId: " + gameState)
             runOnUiThread { toast(gameState) }
         }
-    }
-
-    private fun handleResponseFailure() {
-        error("Invalid WebSocket message!")
     }
 }

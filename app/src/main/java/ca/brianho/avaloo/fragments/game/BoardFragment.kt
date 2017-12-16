@@ -2,9 +2,7 @@ package ca.brianho.avaloo.fragments.game
 
 import android.os.Bundle
 import android.app.Fragment
-import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,35 +10,17 @@ import android.view.ViewGroup
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.activities.UserPromptActivity
 import ca.brianho.avaloo.adapters.PartyListAdapter
-import ca.brianho.avaloo.network.PartyChoiceRequest
-import ca.brianho.avaloo.network.Player
-import ca.brianho.avaloo.network.WSInterface
+import ca.brianho.avaloo.models.*
 import ca.brianho.avaloo.utils.*
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_board.*
-import org.json.JSONArray
+import org.jetbrains.anko.runOnUiThread
+import org.jetbrains.anko.startActivity
 import org.json.JSONObject
 
-class BoardFragment : Fragment(), WSInterface {
-    private var message = ""
-    private var numMembers = 0
-
-    override fun handleResponseMessage(message: String?) {
-        this.message = message!!
-
-
-        val json = JSONObject(message)
-
-        when (json["type"].toString()) {
-            "PARTY_VOTE" -> {
-                val intent = Intent(activity, UserPromptActivity::class.java)
-                intent.putExtra("TYPE", "VOTE")
-                startActivity(intent)
-            }
-            "QUEST_INFO" -> {
-                numMembers = Integer.parseInt(json["partySize"].toString())
-            }
-        }
-    }
+class BoardFragment : Fragment() {
+    private lateinit var rxBusDisposable: Disposable
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -49,17 +29,68 @@ class BoardFragment : Fragment(), WSInterface {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = PartyListAdapter(playerList, numMembers)
+        setupViewsAndListeners()
+        rxBusDisposable = RxEventBus.subscribe(Consumer { handleResponseMessage(it) })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::rxBusDisposable.isInitialized) {
+            rxBusDisposable.dispose()
+        }
+    }
+
+    private fun setupViewsAndListeners() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.visibility = View.VISIBLE
+        recyclerView.adapter = PartyListAdapter()
 
         button.setOnClickListener { sendPartyChoiceRequest() }
-        questInfoTextView.text = message
+    }
+
+    private fun handleResponseMessage(message: String) {
+        when (JSONObject(message)[getString(R.string.key_type)]) {
+            MessageType.CLIENT_SETUP.name -> handleClientSetupResponse(message)
+            MessageType.QUEST_INFO.name -> handleQuestInfoResponse(message)
+            MessageType.PARTY_VOTE.name -> handlePartyVoteResponse()
+        }
+    }
+
+    private fun handleClientSetupResponse(message: String) {
+        val clientSetupResponse = MoshiInstance.fromJson<ClientSetupResponse>(message)
+        runOnUiThread {
+            (recyclerView.adapter as PartyListAdapter).setPlayerList(clientSetupResponse.playerList)
+        }
+    }
+
+    private fun handleQuestInfoResponse(message: String) {
+        val questInfoResponse = MoshiInstance.fromJson<QuestInfoResponse>(message)
+        runOnUiThread {
+            questInfoTextView.text = getString(R.string.quest_info,
+                    questInfoResponse.questNum + 1,
+                    questInfoResponse.questLeader,
+                    questInfoResponse.partySize,
+                    questInfoResponse.questDeclines
+            )
+            if (player.alias == questInfoResponse.questLeader) {
+                (recyclerView.adapter as PartyListAdapter).setNumMembers(questInfoResponse.partySize)
+                (recyclerView.adapter as PartyListAdapter).notifyDataSetChanged()
+                recyclerView.visibility = View.VISIBLE
+                button.visibility = View.VISIBLE
+            } else {
+                recyclerView.visibility = View.GONE
+                button.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun handlePartyVoteResponse() {
+        startActivity<UserPromptActivity>(getString(R.string.key_type) to "VOTE")
     }
 
     private fun sendPartyChoiceRequest() {
         val members = (recyclerView.adapter as PartyListAdapter).getSelectedPlayers()
-        val partyChoiceRequest = PartyChoiceRequest(gameId = gameId, members = members)
-        websocket.sendJson(partyChoiceRequest)
+        MoshiInstance.sendRequestAsJson(
+                PartyChoiceRequest(gameId = Game.gameId, members = members)
+        )
     }
 }

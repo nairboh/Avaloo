@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.network.Player
+import ca.brianho.avaloo.models.Player
 import kotlinx.android.synthetic.main.viewholder_player.view.*
-import org.json.JSONObject
 import java.util.*
 
 class PlayerListAdapter(player: Player) :

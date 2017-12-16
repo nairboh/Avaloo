@@ -6,19 +6,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.network.Player
+import ca.brianho.avaloo.models.Player
 import kotlinx.android.synthetic.main.viewholder_roles.view.*
 import org.jetbrains.anko.toast
 
-class PartyListAdapter(playerList: List<Player>, numMembers: Int) :
-        RecyclerView.Adapter<PartyListAdapter.PartyPlayerViewHolder>() {
-    private val mPlayerList = playerList
+class PartyListAdapter : RecyclerView.Adapter<PartyListAdapter.PartyPlayerViewHolder>() {
+    private lateinit var mPlayerList: List<Player>
     private val mSelectedPlayers = mutableSetOf<Player>()
 
-    private val mTotalMemberNum = numMembers
+    private var mTotalMemberNum: Int = 0
     private var mNumSelectedPlayers = 0
 
     private lateinit var mContext: Context
+
+    fun setPlayerList(playerList: List<Player>) {
+        mPlayerList = playerList
+    }
+
+    fun setNumMembers(numMembers: Int) {
+        mTotalMemberNum = numMembers
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PartyPlayerViewHolder {
         mContext = parent.context
@@ -32,7 +39,7 @@ class PartyListAdapter(playerList: List<Player>, numMembers: Int) :
         handleCheckBoxOnClick(holder, player)
     }
 
-    override fun getItemCount(): Int = mPlayerList.size
+    override fun getItemCount(): Int = if (::mPlayerList.isInitialized) mPlayerList.size else 0
 
     private fun handleCheckBoxOnClick(holder: PartyPlayerViewHolder, player: Player) {
         holder.rolesViewHolder.setOnClickListener {
@@ -62,7 +69,7 @@ class PartyListAdapter(playerList: List<Player>, numMembers: Int) :
         }
     }
 
-    fun getSelectedPlayers(): MutableSet<Player> = mSelectedPlayers
+    fun getSelectedPlayers(): Set<Player> = mSelectedPlayers
 
     class PartyPlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.name

@@ -2,16 +2,15 @@ package ca.brianho.avaloo.fragments.game.prompt
 
 import android.os.Bundle
 import android.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.utils.createGameResponse
-import ca.brianho.avaloo.utils.websocket
+import ca.brianho.avaloo.models.Game
+import ca.brianho.avaloo.models.PartyVoteRequest
+import ca.brianho.avaloo.utils.MoshiInstance
 import kotlinx.android.synthetic.main.fragment_vote.*
-import org.json.JSONObject
 
 class VoteFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,15 +26,12 @@ class VoteFragment : Fragment() {
     }
 
     private fun handleVote(view: View) {
-        val json2 = JSONObject()
-        json2.put("type", "PARTY_VOTE")
-        when (view.id) {
-            R.id.approveButton -> json2.put("vote", "approve")
-            R.id.declineButton -> json2.put("vote", "decline")
+        val vote: String = when (view.id) {
+            R.id.approveButton -> "approve"
+            R.id.declineButton -> "decline"
+            else -> error("Invalid view")
         }
-        json2.put("gameId", createGameResponse.gameId)
-        Log.e("JSON STRING", json2.toString())
 
-        websocket.send(json2.toString())
+        MoshiInstance.sendRequestAsJson(PartyVoteRequest(gameId = Game.gameId, vote = vote))
     }
 }

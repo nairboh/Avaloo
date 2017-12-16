@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.network.Player
+import ca.brianho.avaloo.models.Player
 import ca.brianho.avaloo.utils.*
 import kotlinx.android.synthetic.main.fragment_name.*
 import org.jetbrains.anko.AnkoLogger
@@ -34,10 +34,9 @@ class SetupPlayerFragment : Fragment(), AnkoLogger {
                 toast(getString(R.string.instruction_valid_name))
             } else {
                 player = Player(nameField.text.toString(), UUID.randomUUID().toString())
-
-                defaultSharedPreferences.edit().putString(getString(R.string.key_player),
-                        moshi.adapter<Player>(Player::class.java).toJson(player)
-                ).apply()
+                defaultSharedPreferences.edit()
+                        .putString(getString(R.string.key_player), MoshiInstance.toJson(player))
+                        .apply()
 
                 activity.replaceFragment(R.id.fragment_container, LobbyFragment())
             }

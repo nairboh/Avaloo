@@ -6,22 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.network.Role
+import ca.brianho.avaloo.models.Role
+import ca.brianho.avaloo.models.StartGameResponse
 import kotlinx.android.synthetic.main.viewholder_roles.view.*
 import org.jetbrains.anko.toast
 
-class SpecialRolesAdapter(rolesList: MutableList<Role>, numGood: Int, numEvil: Int) :
-        RecyclerView.Adapter<SpecialRolesAdapter.SpecialRoleViewHolder>() {
-    private val mRolesList = rolesList
-    private val mSelectedRoles = mutableSetOf<String>()
+class SpecialRolesAdapter : RecyclerView.Adapter<SpecialRolesAdapter.SpecialRoleViewHolder>() {
+    private val selectedRoles = mutableSetOf<String>()
 
-    private val mTotalNumGood = numGood
-    private val mTotalNumEvil = numEvil
-
-    private var mNumGood = 0
-    private var mNumEvil = 0
+    private lateinit var startGameResponse: StartGameResponse
+    private var selectedNumGood = 0
+    private var selectedNumEvil = 0
 
     private lateinit var mContext: Context
+
+    fun initialize(startGameResponse: StartGameResponse) {
+        this.startGameResponse = startGameResponse
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecialRoleViewHolder {
         mContext = parent.context
@@ -30,12 +32,18 @@ class SpecialRolesAdapter(rolesList: MutableList<Role>, numGood: Int, numEvil: I
     }
 
     override fun onBindViewHolder(holder: SpecialRoleViewHolder, position: Int) {
-        val role = mRolesList[position]
+        val role = startGameResponse.roles[position]
         holder.name.text = role.name
         handleCheckBoxOnClick(holder, role)
     }
 
-    override fun getItemCount(): Int = mRolesList.size
+    override fun getItemCount(): Int {
+        return if (::startGameResponse.isInitialized) {
+            startGameResponse.roles.size
+        } else {
+            0
+        }
+    }
 
     private fun handleCheckBoxOnClick(holder: SpecialRoleViewHolder, role: Role) {
         holder.rolesViewHolder.setOnClickListener {
@@ -44,8 +52,8 @@ class SpecialRolesAdapter(rolesList: MutableList<Role>, numGood: Int, numEvil: I
                 handleRoleSelected(role, false)
             } else {
                 val shouldAdd = when (role.team) {
-                    mContext.getString(R.string.key_team_good) -> mNumGood < mTotalNumGood
-                    mContext.getString(R.string.key_team_evil) -> mNumEvil < mTotalNumEvil
+                    mContext.getString(R.string.key_team_good) -> selectedNumGood < startGameResponse.numGood
+                    mContext.getString(R.string.key_team_evil) -> selectedNumEvil < startGameResponse.numEvil
                     else -> throw Error(mContext.getString(R.string.error_invalid_team))
                 }
 
@@ -62,21 +70,21 @@ class SpecialRolesAdapter(rolesList: MutableList<Role>, numGood: Int, numEvil: I
 
     private fun handleRoleSelected(role: Role, selected: Boolean) {
         if (selected) {
-            mSelectedRoles.add(role.name)
+            selectedRoles.add(role.name)
             when (role.team) {
-                mContext.getString(R.string.key_team_good) -> mNumGood++
-                mContext.getString(R.string.key_team_evil) -> mNumEvil++
+                mContext.getString(R.string.key_team_good) -> selectedNumGood++
+                mContext.getString(R.string.key_team_evil) -> selectedNumEvil++
             }
         } else {
-            mSelectedRoles.remove(role.name)
+            selectedRoles.remove(role.name)
             when (role.team) {
-                mContext.getString(R.string.key_team_good) -> mNumGood--
-                mContext.getString(R.string.key_team_evil) -> mNumEvil--
+                mContext.getString(R.string.key_team_good) -> selectedNumGood--
+                mContext.getString(R.string.key_team_evil) -> selectedNumEvil--
             }
         }
     }
 
-    fun getSelectedRoles(): MutableSet<String> = mSelectedRoles
+    fun getSelectedRoles(): Set<String> = selectedRoles
 
     class SpecialRoleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.name

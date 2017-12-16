@@ -6,10 +6,8 @@ import android.os.Bundle
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.fragments.lobby.LobbyFragment
 import ca.brianho.avaloo.fragments.lobby.SetupPlayerFragment
-import ca.brianho.avaloo.network.Player
+import ca.brianho.avaloo.models.Player
 import ca.brianho.avaloo.utils.*
-import com.squareup.moshi.KotlinJsonAdapterFactory
-import com.squareup.moshi.Moshi
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.defaultSharedPreferences
 
@@ -18,15 +16,10 @@ class LobbyActivity : Activity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lobby)
 
-        moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
-
         val savedPlayerJson = defaultSharedPreferences.getString(getString(R.string.key_player), null)
         if (savedPlayerJson != null) {
-            val savedPlayer = moshi.adapter<Player>(Player::class.java).fromJson(savedPlayerJson)
-
-            if (savedPlayer != null) {
-                player = savedPlayer
-            }
+            val savedPlayer = MoshiInstance.fromJson<Player>(savedPlayerJson)
+            player = savedPlayer
         }
 
         replaceFragment(R.id.fragment_container, when (savedPlayerJson) {
