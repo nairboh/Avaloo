@@ -2,6 +2,7 @@ package ca.brianho.avaloo.fragments.game
 
 import android.os.Bundle
 import android.app.Fragment
+import android.os.Message
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +53,8 @@ class BoardFragment : Fragment() {
             MessageType.CLIENT_SETUP.name -> handleClientSetupResponse(message)
             MessageType.QUEST_INFO.name -> handleQuestInfoResponse(message)
             MessageType.PARTY_VOTE.name -> handlePartyVoteResponse()
+            MessageType.PARTY_RESULT.name -> handlePartyResultResponse(message)
+            MessageType.CHOOSE_TARGET.name -> handleChooseTargetResponse(message)
         }
     }
 
@@ -66,12 +69,12 @@ class BoardFragment : Fragment() {
         val questInfoResponse = MoshiInstance.fromJson<QuestInfoResponse>(message)
         runOnUiThread {
             questInfoTextView.text = getString(R.string.quest_info,
-                    questInfoResponse.questNum + 1,
-                    questInfoResponse.questLeader,
+                    questInfoResponse.questNum,
+                    questInfoResponse.questLeader.alias,
                     questInfoResponse.partySize,
                     questInfoResponse.questDeclines
             )
-            if (player.alias == questInfoResponse.questLeader) {
+            if (player == questInfoResponse.questLeader) {
                 (recyclerView.adapter as PartyListAdapter).setNumMembers(questInfoResponse.partySize)
                 (recyclerView.adapter as PartyListAdapter).notifyDataSetChanged()
                 recyclerView.visibility = View.VISIBLE
@@ -84,13 +87,47 @@ class BoardFragment : Fragment() {
     }
 
     private fun handlePartyVoteResponse() {
-        startActivity<UserPromptActivity>(getString(R.string.key_type) to "VOTE")
+        runOnUiThread {
+            recyclerView.visibility = View.GONE
+            button.visibility = View.GONE
+        }
+        startActivity<UserPromptActivity>(getString(R.string.key_type) to "VOTE_PARTY")
+    }
+
+    private fun handlePartyResultResponse(message: String) {
+        val result = JSONObject(message)["result"]
+
+        if (result == "accepted") { // need to check for player
+            startActivity<UserPromptActivity>(getString(R.string.key_type) to "VOTE_QUEST")
+        }
+    }
+
+    private fun handleChooseTargetResponse(message: String) {
+        val chooseTargetResponse = MoshiInstance.fromJson<ChooseTargetResponse>(message)
+        runOnUiThread {
+            questInfoTextView.text = "Choose Merlin"
+            recyclerView.adapter = PartyListAdapter()
+            (recyclerView.adapter as PartyListAdapter).setNumMembers(1)
+            (recyclerView.adapter as PartyListAdapter).setPlayerList(chooseTargetResponse.playerList)
+            (recyclerView.adapter as PartyListAdapter).notifyDataSetChanged()
+            recyclerView.visibility = View.VISIBLE
+            button.visibility = View.VISIBLE
+
+            button.setOnClickListener { sendTargetRequest() }
+        }
     }
 
     private fun sendPartyChoiceRequest() {
         val members = (recyclerView.adapter as PartyListAdapter).getSelectedPlayers()
         MoshiInstance.sendRequestAsJson(
-                PartyChoiceRequest(gameId = Game.gameId, members = members)
+            PartyChoiceRequest(gameId = Game.gameId, members = members)
+        )
+    }
+
+    private fun sendTargetRequest() {
+        val target = (recyclerView.adapter as PartyListAdapter).getSelectedPlayers().iterator().next()
+        MoshiInstance.sendRequestAsJson(
+            ChooseTargetRequest(gameId = Game.gameId, player = target)
         )
     }
 }

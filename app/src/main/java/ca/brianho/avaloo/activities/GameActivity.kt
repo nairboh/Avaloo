@@ -6,8 +6,12 @@ import android.view.MenuItem
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.fragments.game.BoardFragment
 import ca.brianho.avaloo.fragments.game.RoleFragment
+import ca.brianho.avaloo.network.WSConnection
 import ca.brianho.avaloo.utils.replaceFragment
 import kotlinx.android.synthetic.main.activity_game.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 class GameActivity : AppCompatActivity() {
     private lateinit var boardFragment: BoardFragment
@@ -41,5 +45,16 @@ class GameActivity : AppCompatActivity() {
             roleFragment = RoleFragment()
         }
         replaceFragment(R.id.fragment_container, roleFragment)
+    }
+
+    override fun onBackPressed() {
+        alert(getString(R.string.message_leave_game_confirm),
+                getString(R.string.message_leave_game_confirm_title)) {
+            yesButton {
+                WSConnection.disconnect()
+                super.onBackPressed()
+            }
+            noButton {}
+        }.show()
     }
 }

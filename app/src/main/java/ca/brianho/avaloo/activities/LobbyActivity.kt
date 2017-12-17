@@ -7,9 +7,9 @@ import ca.brianho.avaloo.R
 import ca.brianho.avaloo.fragments.lobby.LobbyFragment
 import ca.brianho.avaloo.fragments.lobby.SetupPlayerFragment
 import ca.brianho.avaloo.models.Player
+import ca.brianho.avaloo.network.WSConnection
 import ca.brianho.avaloo.utils.*
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.*
 
 class LobbyActivity : Activity(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,13 +30,14 @@ class LobbyActivity : Activity(), AnkoLogger {
 
     override fun onBackPressed() {
         if (fragmentManager.backStackEntryCount > 0) {
-            AlertDialog.Builder(this)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Abandoning Game")
-                    .setMessage("Are you sure you leave this game?")
-                    .setPositiveButton("Yes", { _, _ -> fragmentManager.popBackStack() })
-                    .setNegativeButton("No", null)
-                    .show()
+            alert(getString(R.string.message_leave_game_confirm),
+                    getString(R.string.message_leave_game_confirm_title)) {
+                yesButton {
+                    WSConnection.disconnect()
+                    fragmentManager.popBackStack()
+                }
+                noButton {}
+            }.show()
         } else {
             super.onBackPressed()
         }

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activities.LobbyActivity">
+        <activity android:name=".activities.LobbyActivity"
+            android:keepScreenOn="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,6 +25,7 @@
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
         <activity android:name=".activities.GameActivity"
+            android:keepScreenOn="true"
             android:theme="@style/Theme.AppCompat"/>
         <activity android:name=".activities.UserPromptActivity">
 

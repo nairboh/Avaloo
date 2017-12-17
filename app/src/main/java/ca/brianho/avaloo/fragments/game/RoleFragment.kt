@@ -12,6 +12,7 @@ import ca.brianho.avaloo.models.ClientSetupResponse
 import ca.brianho.avaloo.models.MessageType
 import ca.brianho.avaloo.utils.MoshiInstance
 import ca.brianho.avaloo.utils.RxEventBus
+import ca.brianho.avaloo.utils.role
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_role.*
@@ -52,6 +53,7 @@ class RoleFragment : Fragment() {
 
     private fun handleClientSetupResponse(message: String) {
         val clientSetupResponse = MoshiInstance.fromJson<ClientSetupResponse>(message)
+        role = clientSetupResponse.role
         val roleName = clientSetupResponse.role.name
         val team = clientSetupResponse.role.team
         val knowledge = clientSetupResponse.role.knowledge.joinToString()

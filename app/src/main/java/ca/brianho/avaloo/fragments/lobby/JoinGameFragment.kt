@@ -16,6 +16,7 @@ import ca.brianho.avaloo.utils.*
 import com.google.zxing.integration.android.IntentIntegrator
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
+import kotlinx.android.synthetic.main.fragment_join_game.*
 import org.jetbrains.anko.*
 import org.json.JSONObject
 
@@ -102,7 +103,10 @@ class JoinGameFragment : Fragment(), AnkoLogger {
             error("Game State is blank!")
         } else {
             debug("Received gameId: " + gameState)
-            runOnUiThread { toast(gameState) }
+            runOnUiThread {
+                textView.visibility = View.VISIBLE
+                toast(gameState)
+            }
         }
     }
 }

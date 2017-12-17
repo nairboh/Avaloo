@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import ca.brianho.avaloo.R
-import ca.brianho.avaloo.models.Game
-import ca.brianho.avaloo.models.PartyVoteRequest
+import ca.brianho.avaloo.models.*
 import ca.brianho.avaloo.utils.MoshiInstance
+import ca.brianho.avaloo.utils.role
 import kotlinx.android.synthetic.main.fragment_vote.*
 
-class VoteFragment : Fragment() {
+class QuestVoteFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_vote, container, false)
@@ -21,17 +21,22 @@ class VoteFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        approveButton.setOnClickListener { handleVote(it) }
-        declineButton.setOnClickListener { handleVote(it) }
+        approveButton.setOnClickListener { sendPartyVoteRequest(it) }
+        declineButton.setOnClickListener { sendPartyVoteRequest(it) }
+
+//        if (role.team == "Good") {
+//            declineButton.text = getString(R.string.approve)
+//        }
     }
 
-    private fun handleVote(view: View) {
+    private fun sendPartyVoteRequest(view: View) {
         val vote: String = when (view.id) {
             R.id.approveButton -> "approve"
             R.id.declineButton -> "decline"
             else -> error("Invalid view")
         }
 
-        MoshiInstance.sendRequestAsJson(PartyVoteRequest(gameId = Game.gameId, vote = vote))
+        MoshiInstance.sendRequestAsJson(QuestVoteRequest(gameId = Game.gameId, vote = vote))
+        activity.finish()
     }
 }

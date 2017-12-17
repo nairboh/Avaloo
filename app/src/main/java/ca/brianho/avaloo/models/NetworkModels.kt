@@ -10,8 +10,12 @@ enum class MessageType {
     FILTERED_ROLES,
     PARTY_CHOICE,
     PARTY_VOTE,
+    PARTY_RESULT,
     CLIENT_SETUP,
-    QUEST_INFO
+    QUEST_INFO,
+    QUEST_VOTE,
+    QUEST_RESULT,
+    CHOOSE_TARGET
 }
 
 data class CreateGameRequest(@Json(name = "type") val type: String = MessageType.CREATE.toString(),
@@ -50,8 +54,22 @@ data class FilteredRoleRequest(@Json(name = "type") val type: String = MessageTy
 data class QuestInfoResponse(@Json(name = "questNum") val questNum: Int,
                              @Json(name = "partySize") val partySize: Int,
                              @Json(name = "questDeclines") val questDeclines: Int,
-                             @Json(name = "questLeader") val questLeader: String)
+                             @Json(name = "questLeader") val questLeader: Player)
 
 data class PartyVoteRequest(@Json(name = "type") val type: String = MessageType.PARTY_VOTE.name,
                             @Json(name = "gameId") val gameId: String,
                             @Json(name = "vote") val vote: String)
+
+data class PartyVoteResponse(@Json(name = "playerList") val playerList: List<Player>)
+
+data class QuestVoteRequest(@Json(name = "type") val type: String = MessageType.QUEST_VOTE.name,
+                            @Json(name = "gameId") val gameId: String,
+                            @Json(name = "vote") val vote: String)
+
+data class ChooseTargetResponse(@Json(name = "playerList") val playerList: List<Player>)
+
+data class ChooseTargetRequest(@Json(name = "type") val type: String = MessageType.CHOOSE_TARGET.name,
+                               @Json(name = "gameId") val gameId: String,
+                               @Json(name = "player") val player: Player)
+
+//data class QuestVoteResponse(@Json(name = ""))

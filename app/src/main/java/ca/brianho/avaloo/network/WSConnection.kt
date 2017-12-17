@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 object WSConnection : AnkoLogger {
     private lateinit var websocket: WebSocket
 
-    fun connect(url: String = "ws://10.0.0.124:8080/") {
+    fun connect(url: String = "ws://192.168.0.12:8080/") {
         val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
         val request = Request.Builder().url(url).build()
         websocket = client.newWebSocket(request, WSListener)

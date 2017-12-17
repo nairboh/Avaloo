@@ -39,6 +39,6 @@ class LobbyFragment : Fragment() {
             joinGameButton -> JoinGameFragment()
             settingsButton -> SetupPlayerFragment()
             else -> error("Unsupported View")
-        })
+        }, true)
     }
 }
