@@ -81,7 +81,7 @@ class PlayerListAdapter(player: Player) :
 
     private fun setViewHolderText(holder: RecyclerView.ViewHolder, position: Int, alias: String) {
         (holder as PlayerViewHolder).alias.text =
-                context.getString(R.string.player_order, position + 1, alias)
+                context.getString(R.string.format_player_order, position + 1, alias)
     }
 
     class PlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

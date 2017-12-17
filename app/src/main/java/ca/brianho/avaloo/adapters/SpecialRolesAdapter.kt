@@ -54,14 +54,14 @@ class SpecialRolesAdapter : RecyclerView.Adapter<SpecialRolesAdapter.SpecialRole
                 val shouldAdd = when (role.team) {
                     mContext.getString(R.string.key_team_good) -> selectedNumGood < startGameResponse.numGood
                     mContext.getString(R.string.key_team_evil) -> selectedNumEvil < startGameResponse.numEvil
-                    else -> throw Error(mContext.getString(R.string.error_invalid_team))
+                    else -> throw Error("Invalid Team")
                 }
 
                 if (shouldAdd) {
                     holder.checkBox.isChecked = true
                     handleRoleSelected(role, true)
                 } else {
-                    mContext.toast(mContext.resources.getString(R.string.max_special_roles_selected,
+                    mContext.toast(mContext.resources.getString(R.string.toast_max_special,
                             role.team.toLowerCase()))
                 }
             }

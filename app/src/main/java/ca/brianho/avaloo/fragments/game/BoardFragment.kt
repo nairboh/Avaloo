@@ -2,7 +2,6 @@ package ca.brianho.avaloo.fragments.game
 
 import android.os.Bundle
 import android.app.Fragment
-import android.os.Message
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +67,7 @@ class BoardFragment : Fragment() {
     private fun handleQuestInfoResponse(message: String) {
         val questInfoResponse = MoshiInstance.fromJson<QuestInfoResponse>(message)
         runOnUiThread {
-            questInfoTextView.text = getString(R.string.quest_info,
+            questInfoTextView.text = getString(R.string.info_quest,
                     questInfoResponse.questNum,
                     questInfoResponse.questLeader.alias,
                     questInfoResponse.partySize,

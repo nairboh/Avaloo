@@ -52,7 +52,7 @@ class PartyVoteFragment : Fragment() {
         val partyVoteResponse = MoshiInstance.fromJson<PartyVoteResponse>(message)
         runOnUiThread {
             val membersString = partyVoteResponse.playerList.joinToString { player -> player.alias }
-            questMembersTextView.text = getString(R.string.vote_info, membersString)
+            questMembersTextView.text = getString(R.string.info_vote, membersString)
         }
     }
 

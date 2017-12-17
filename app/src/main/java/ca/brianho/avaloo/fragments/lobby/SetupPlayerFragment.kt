@@ -31,7 +31,7 @@ class SetupPlayerFragment : Fragment(), AnkoLogger {
     private fun onEnterPressed(actionId: Int): Boolean {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             if (nameField.text.isNullOrBlank()) {
-                toast(getString(R.string.instruction_valid_name))
+                toast(getString(R.string.toast_valid_name))
             } else {
                 player = Player(nameField.text.toString(), UUID.randomUUID().toString())
                 defaultSharedPreferences.edit()

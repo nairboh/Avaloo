@@ -58,7 +58,7 @@ class RoleFragment : Fragment() {
         val team = clientSetupResponse.role.team
         val knowledge = clientSetupResponse.role.knowledge.joinToString()
         runOnUiThread {
-            roleInfoTextView.text = getString(R.string.role_info, roleName, team, knowledge)
+            roleInfoTextView.text = getString(R.string.info_role, roleName, team, knowledge)
         }
     }
 }

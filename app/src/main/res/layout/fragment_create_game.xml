@@ -14,11 +14,12 @@
             android:layout_width="390dp"
             android:layout_height="222dp"
             android:layout_marginTop="8dp"
-            android:contentDescription="@string/desc_qrcode"
+            android:contentDescription="QRCode containing gameId"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.508"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/startGameButton"
@@ -28,7 +29,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/start_game"
+            android:text="@string/btn_start"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.518"
@@ -73,7 +74,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="@string/instruction_set_player_order"
+            android:text="@string/toast_set_player_order"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
