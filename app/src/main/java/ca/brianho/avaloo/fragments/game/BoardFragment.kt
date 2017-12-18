@@ -12,11 +12,10 @@ import ca.brianho.avaloo.activities.UserPromptActivity
 import ca.brianho.avaloo.adapters.PartyListAdapter
 import ca.brianho.avaloo.models.*
 import ca.brianho.avaloo.utils.*
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.fragment_board.*
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import org.json.JSONObject
 
 class BoardFragment : Fragment() {
@@ -44,6 +43,7 @@ class BoardFragment : Fragment() {
             MessageType.PARTY_VOTE.name -> handlePartyVoteResponse()
             MessageType.PARTY_RESULT.name -> handlePartyResultResponse(message)
             MessageType.CHOOSE_TARGET.name -> handleChooseTargetResponse(message)
+            MessageType.GAME_OVER.name -> handleGameOverResponse(message)
         }
     }
 
@@ -59,9 +59,9 @@ class BoardFragment : Fragment() {
         runOnUiThread {
             questInfoTextView.text = getString(R.string.info_quest,
                     questInfoResponse.questNum,
+                    questInfoResponse.questDeclines,
                     questInfoResponse.questLeader.alias,
-                    questInfoResponse.partySize,
-                    questInfoResponse.questDeclines
+                    questInfoResponse.partySize
             )
             if (player == questInfoResponse.questLeader) {
                 (recyclerView.adapter as PartyListAdapter).setNumMembers(questInfoResponse.partySize)
@@ -94,7 +94,7 @@ class BoardFragment : Fragment() {
     private fun handleChooseTargetResponse(message: String) {
         val chooseTargetResponse = MoshiInstance.fromJson<ChooseTargetResponse>(message)
         runOnUiThread {
-            questInfoTextView.text = "Choose Merlin"
+            questInfoTextView.text = getString(R.string.info_choose_target)
             recyclerView.adapter = PartyListAdapter()
             (recyclerView.adapter as PartyListAdapter).setNumMembers(1)
             (recyclerView.adapter as PartyListAdapter).setPlayerList(chooseTargetResponse.playerList)
@@ -106,11 +106,29 @@ class BoardFragment : Fragment() {
         }
     }
 
+    private fun handleGameOverResponse(message: String) {
+        val gameOverResponse = MoshiInstance.fromJson<GameOverResponse>(message)
+        runOnUiThread {
+            val playerList = gameOverResponse.playerList
+                    .map { entry -> entry.value + " as " + entry.key }
+                    .joinToString("\n")
+            questInfoTextView.text =
+                    getString(R.string.info_game_over, gameOverResponse.winningTeam, playerList)
+        }
+    }
+
     private fun sendPartyChoiceRequest() {
-        val members = (recyclerView.adapter as PartyListAdapter).getSelectedPlayers()
-        MoshiInstance.sendRequestAsJson(
-            PartyChoiceRequest(gameId = Game.gameId, members = members)
-        )
+        val adapter = (recyclerView.adapter as PartyListAdapter)
+        val members = adapter.getSelectedPlayers()
+        val partySize = adapter.getAllowedSelectedPlayers()
+
+        if (members.size < partySize) {
+            toast(getString(R.string.toast_not_min_num_players, partySize))
+        } else {
+            MoshiInstance.sendRequestAsJson(
+                PartyChoiceRequest(gameId = Game.gameId, members = members)
+            )
+        }
     }
 
     private fun sendTargetRequest() {

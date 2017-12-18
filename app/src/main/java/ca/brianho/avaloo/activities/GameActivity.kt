@@ -58,6 +58,7 @@ class GameActivity : AppCompatActivity() {
             MessageType.PARTY_VOTE.name -> boardFragment.handleResponseMessage(message)
             MessageType.PARTY_RESULT.name -> boardFragment.handleResponseMessage(message)
             MessageType.CHOOSE_TARGET.name -> boardFragment.handleResponseMessage(message)
+            MessageType.GAME_OVER.name -> boardFragment.handleResponseMessage(message)
         }
     }
 

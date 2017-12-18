@@ -53,7 +53,7 @@ class PartyListAdapter : RecyclerView.Adapter<PartyListAdapter.PartyPlayerViewHo
                     holder.checkBox.isChecked = true
                     handlePlayerSelected(player, true)
                 } else {
-                    mContext.toast("MAX PLAYERS FOR PARTY")
+                    mContext.toast(mContext.getString(R.string.toast_max_players))
                 }
             }
         }
@@ -70,6 +70,10 @@ class PartyListAdapter : RecyclerView.Adapter<PartyListAdapter.PartyPlayerViewHo
     }
 
     fun getSelectedPlayers(): Set<Player> = mSelectedPlayers
+
+    fun getAllowedSelectedPlayers(): Int {
+        return mTotalMemberNum
+    }
 
     class PartyPlayerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name = itemView.name

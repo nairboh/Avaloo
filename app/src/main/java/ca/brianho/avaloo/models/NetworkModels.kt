@@ -15,7 +15,8 @@ enum class MessageType {
     QUEST_INFO,
     QUEST_VOTE,
     QUEST_RESULT,
-    CHOOSE_TARGET
+    CHOOSE_TARGET,
+    GAME_OVER
 }
 
 data class CreateGameRequest(@Json(name = "type") val type: String = MessageType.CREATE.toString(),
@@ -72,4 +73,5 @@ data class ChooseTargetRequest(@Json(name = "type") val type: String = MessageTy
                                @Json(name = "gameId") val gameId: String,
                                @Json(name = "player") val player: Player)
 
-//data class QuestVoteResponse(@Json(name = ""))
+data class GameOverResponse(@Json(name = "winningTeam") val winningTeam: String,
+                            @Json(name = "playerList") val playerList: Map<String, String>)

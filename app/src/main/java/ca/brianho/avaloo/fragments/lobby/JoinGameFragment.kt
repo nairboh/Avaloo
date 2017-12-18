@@ -105,7 +105,6 @@ class JoinGameFragment : Fragment(), AnkoLogger {
             debug("Received gameId: " + gameState)
             runOnUiThread {
                 textView.visibility = View.VISIBLE
-                toast(gameState)
             }
         }
     }

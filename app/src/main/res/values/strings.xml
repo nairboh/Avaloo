@@ -29,14 +29,18 @@
     <string name="toast_valid_name">Please enter a valid name to continue</string>
     <string name="toast_sel_special_role">Select special characters to include in the game!</string>
     <string name="toast_set_player_order">Hold and drag players to reassign play order</string>
+    <string name="toast_max_players">Max players selected!</string>
+    <string name="toast_not_min_num_players">Need %1$d players selected!</string>
 
     <!-- User prompts and info -->
     <string name="welcome_msg">Welcome %1$s,\nWhat would you like to do?</string>
     <string name="name_hint">Enter Name</string>
     <string name="format_player_order">%1$d. %2$s</string>
     <string name="info_role">Your role is: %1$s\nYour team is: %2$s\nYou can see: %3$s</string>
-    <string name="info_quest">Quest #%1$d\n%2$s is choosing, they may pick %3$d players to go on this quest\nThis quest has failed %4$d times.</string>
+    <string name="info_quest">Quest #%1$d, (Declined: %2$d)\n%3$s is choosing, quest capacity: %4$d</string>
     <string name="info_vote">Do you accept the chosen quest members: %1$s</string>
+    <string name="info_choose_target">Choose Merlin</string>
+    <string name="info_game_over">Game Over!\nWinning Team: %1$s\nRoles:\n%2$s</string>
 
     <string name="join_wait_msg">Waiting for the game to start…</string>
     <string name="generating_qr_game_code">Generating QR Game Code</string>
