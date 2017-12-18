@@ -19,6 +19,8 @@ import org.jetbrains.anko.toast
 import org.json.JSONObject
 
 class BoardFragment : Fragment() {
+    private var questParticipant = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_board, container, false)
@@ -40,7 +42,7 @@ class BoardFragment : Fragment() {
         when (JSONObject(message)[getString(R.string.key_type)]) {
             MessageType.CLIENT_SETUP.name -> handleClientSetupResponse(message)
             MessageType.QUEST_INFO.name -> handleQuestInfoResponse(message)
-            MessageType.PARTY_VOTE.name -> handlePartyVoteResponse()
+            MessageType.PARTY_VOTE.name -> handlePartyVoteResponse(message)
             MessageType.PARTY_RESULT.name -> handlePartyResultResponse(message)
             MessageType.CHOOSE_TARGET.name -> handleChooseTargetResponse(message)
             MessageType.GAME_OVER.name -> handleGameOverResponse(message)
@@ -75,7 +77,9 @@ class BoardFragment : Fragment() {
         }
     }
 
-    private fun handlePartyVoteResponse() {
+    private fun handlePartyVoteResponse(message: String) {
+        val partyVoteResponse = MoshiInstance.fromJson<PartyVoteResponse>(message)
+        questParticipant = partyVoteResponse.playerList.contains(player)
         runOnUiThread {
             recyclerView.visibility = View.GONE
             button.visibility = View.GONE
@@ -86,7 +90,7 @@ class BoardFragment : Fragment() {
     private fun handlePartyResultResponse(message: String) {
         val result = JSONObject(message)["result"]
 
-        if (result == "accepted") { // need to check for player
+        if (questParticipant && result == "accepted") {
             startActivity<UserPromptActivity>(getString(R.string.key_type) to "VOTE_QUEST")
         }
     }

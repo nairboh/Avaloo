@@ -12,8 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activities.LobbyActivity"
-            android:keepScreenOn="true">
+        <activity android:name=".activities.LobbyActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,14 +22,10 @@
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
-            tools:replace="screenOrientation"
-            android:keepScreenOn="true" />
+            tools:replace="screenOrientation" />
         <activity
             android:name=".activities.GameActivity"
-            android:theme="@style/Theme.AppCompat"
-            android:keepScreenOn="true" />
-        <activity android:name=".activities.UserPromptActivity"
-            android:keepScreenOn="true" />
+            android:theme="@style/Theme.AppCompat" />
+        <activity android:name=".activities.UserPromptActivity" />
     </application>
-
 </manifest>

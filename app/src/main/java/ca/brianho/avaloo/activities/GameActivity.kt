@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.fragments.game.BoardFragment
 import ca.brianho.avaloo.fragments.game.RoleFragment
@@ -25,6 +26,7 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setupFragmentContainers()
         setupBottomNavBar()
         rxBusDisposable = RxEventBus.subscribe(Consumer { handleResponseMessage(it) })
@@ -82,6 +84,7 @@ class GameActivity : AppCompatActivity() {
                 getString(R.string.message_leave_game_confirm_title)) {
             yesButton {
                 WSConnection.disconnect()
+                RxEventBus.clear()
                 startActivity(intentFor<LobbyActivity>().newTask().clearTask())
             }
             noButton {}
