@@ -20,8 +20,6 @@ import org.jetbrains.anko.startActivity
 import org.json.JSONObject
 
 class BoardFragment : Fragment() {
-    private lateinit var rxBusDisposable: Disposable
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_board, container, false)
@@ -30,14 +28,6 @@ class BoardFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewsAndListeners()
-        rxBusDisposable = RxEventBus.subscribe(Consumer { handleResponseMessage(it) })
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (::rxBusDisposable.isInitialized) {
-            rxBusDisposable.dispose()
-        }
     }
 
     private fun setupViewsAndListeners() {
@@ -47,7 +37,7 @@ class BoardFragment : Fragment() {
         button.setOnClickListener { sendPartyChoiceRequest() }
     }
 
-    private fun handleResponseMessage(message: String) {
+    internal fun handleResponseMessage(message: String) {
         when (JSONObject(message)[getString(R.string.key_type)]) {
             MessageType.CLIENT_SETUP.name -> handleClientSetupResponse(message)
             MessageType.QUEST_INFO.name -> handleQuestInfoResponse(message)

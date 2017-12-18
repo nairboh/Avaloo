@@ -8,9 +8,7 @@ import ca.brianho.avaloo.fragments.game.prompt.QuestVoteFragment
 import ca.brianho.avaloo.fragments.game.setup.SpecialRolesFragment
 import ca.brianho.avaloo.network.WSConnection
 import ca.brianho.avaloo.utils.replaceFragment
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.noButton
-import org.jetbrains.anko.yesButton
+import org.jetbrains.anko.*
 
 class UserPromptActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +27,7 @@ class UserPromptActivity : Activity() {
                 getString(R.string.message_leave_game_confirm_title)) {
             yesButton {
                 WSConnection.disconnect()
-                super.onBackPressed()
+                startActivity(intentFor<LobbyActivity>().newTask().clearTask())
             }
             noButton {}
         }.show()
