@@ -1,7 +1,6 @@
 package ca.brianho.avaloo.activities
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.WindowManager
 import ca.brianho.avaloo.R

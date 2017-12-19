@@ -8,7 +8,7 @@ import org.jetbrains.anko.error
 import java.util.concurrent.TimeUnit
 
 object WSConnection : AnkoLogger {
-    private lateinit var websocket: WebSocket
+    private var websocket: WebSocket? = null
 
     private fun connect(url: String = "ws://avaloo-server.herokuapp.com/") {
         val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
@@ -17,17 +17,18 @@ object WSConnection : AnkoLogger {
     }
 
     fun disconnect() {
-        if (::websocket.isInitialized) {
-            websocket.close(1000, null)
+        if (websocket != null) {
+            websocket!!.close(1000, "Disconnected")
+            websocket = null
         }
     }
 
     fun send(message: String) {
-        if (!::websocket.isInitialized) {
+        if (websocket == null) {
             connect()
         }
 
-        websocket.send(message)
+        websocket!!.send(message)
     }
 
     private object WSListener : WebSocketListener() {
