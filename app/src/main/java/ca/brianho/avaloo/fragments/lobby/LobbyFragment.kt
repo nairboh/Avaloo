@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.brianho.avaloo.R
+import ca.brianho.avaloo.activities.SettingsActivity
 import ca.brianho.avaloo.models.CreateGameRequest
 import ca.brianho.avaloo.utils.MoshiInstance
 import ca.brianho.avaloo.utils.RxEventBus
 import ca.brianho.avaloo.utils.player
 import ca.brianho.avaloo.utils.replaceFragment
 import kotlinx.android.synthetic.main.fragment_create_or_join.*
+import org.jetbrains.anko.startActivity
 
 class LobbyFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -30,15 +32,17 @@ class LobbyFragment : Fragment() {
     }
 
     private fun handleClick(view: View) {
-        activity.replaceFragment(R.id.fragment_container, when (view) {
-            createGameButton -> {
-                RxEventBus.clear()
-                MoshiInstance.sendRequestAsJson(CreateGameRequest(player = player))
-                CreateGameFragment()
-            }
-            joinGameButton -> JoinGameFragment()
-            settingsButton -> SetupPlayerFragment()
-            else -> error("Unsupported View")
-        }, true)
+        when (view) {
+            settingsButton -> startActivity<SettingsActivity>()
+            else -> activity.replaceFragment(R.id.fragment_container, when (view) {
+                createGameButton -> {
+                    RxEventBus.clear()
+                    MoshiInstance.sendRequestAsJson(CreateGameRequest(player = player))
+                    CreateGameFragment()
+                }
+                joinGameButton -> JoinGameFragment()
+                else -> error("Unsupported View")
+            }, true)
+        }
     }
 }

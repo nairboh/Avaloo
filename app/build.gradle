@@ -6,7 +6,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "ca.brianho.avaloo"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         multiDexEnabled true
         versionCode 1
@@ -23,9 +23,8 @@ android {
 
 ext {
     anko_ver = '0.10.2'
-    rxjava_ver = '2.1.0'
-    moshi_ver = '1.5.0'
-    support_ver = '27.0.2'
+    moshi_ver = '1.6.0'
+    support_ver = '27.1.1'
 }
 
 dependencies {
@@ -33,26 +32,23 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_ver"
 
-    implementation "com.android.support:appcompat-v7:$support_ver"
     implementation "com.android.support:recyclerview-v7:$support_ver"
-    implementation "com.android.support:support-v4:$support_ver"
-    implementation "com.android.support:appcompat-v7:$support_ver"
     implementation "com.android.support:design:$support_ver"
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_ver"
 
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
-    implementation "io.reactivex.rxjava2:rxkotlin:$rxjava_ver"
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
     implementation 'com.google.zxing:core:3.2.1'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

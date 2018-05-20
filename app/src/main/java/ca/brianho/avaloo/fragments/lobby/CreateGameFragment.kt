@@ -121,5 +121,6 @@ class CreateGameFragment : Fragment(), AnkoLogger {
         startActivity<UserPromptActivity>(
             getString(R.string.key_type) to getString(R.string.key_select_special)
         )
+        activity.fragmentManager.beginTransaction().remove(this).commit()
     }
 }

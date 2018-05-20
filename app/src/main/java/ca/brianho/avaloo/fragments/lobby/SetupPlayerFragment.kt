@@ -33,9 +33,14 @@ class SetupPlayerFragment : Fragment(), AnkoLogger {
             if (nameField.text.isNullOrBlank()) {
                 toast(getString(R.string.toast_valid_name))
             } else {
-                player = Player(nameField.text.toString(), UUID.randomUUID().toString())
+                val name = nameField.text.toString()
+                player = Player(name, UUID.randomUUID().toString())
                 defaultSharedPreferences.edit()
                         .putString(getString(R.string.key_player), MoshiInstance.toJson(player))
+                        .apply()
+
+                defaultSharedPreferences.edit()
+                        .putString(getString(R.string.key_name), name)
                         .apply()
 
                 activity.replaceFragment(R.id.fragment_container, LobbyFragment())

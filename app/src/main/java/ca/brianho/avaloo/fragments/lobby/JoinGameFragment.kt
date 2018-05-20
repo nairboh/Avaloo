@@ -59,7 +59,7 @@ class JoinGameFragment : Fragment(), AnkoLogger {
 
             if (result != null) {
                 val content = result.contents
-                debug("Scanned content: " + content)
+                debug("Scanned content: $content")
 
                 if (content.matches(uuidPattern)) {
                     //Temp
@@ -102,7 +102,7 @@ class JoinGameFragment : Fragment(), AnkoLogger {
         if (gameState.isBlank()) {
             error("Game State is blank!")
         } else {
-            debug("Received gameId: " + gameState)
+            debug("Received gameId: $gameState")
             runOnUiThread {
                 textView.visibility = View.VISIBLE
             }

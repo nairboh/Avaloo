@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="party_vote_choices">
+        <item>Choose</item>
+        <item>Approve</item>
+        <item>Decline</item>
+    </string-array>
+
+    <string-array name="quest_vote_choices">
+        <item>Choose</item>
+        <item>Pass</item>
+        <item>Fail</item>
+    </string-array>
+</resources>

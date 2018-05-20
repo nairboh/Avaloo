@@ -48,4 +48,9 @@
 
     <string name="message_leave_game_confirm">Are you sure you want to leave this game?</string>
     <string name="message_leave_game_confirm_title">Abandoning Game</string>
+
+    <string name="key_name">NAME</string>
+
+    <string name="quest_results">Quest Results:\nQ1: %1s\nQ2: %2s\nQ3: %3s\nQ4: %4s\nQ5: %5s</string>
+    <string name="quest_prompt_text">You have been selected to go on a quest!</string>
 </resources>

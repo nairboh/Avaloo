@@ -1,7 +1,7 @@
 package ca.brianho.avaloo.activities
 
+import android.app.Activity
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_game.*
 import org.jetbrains.anko.*
 import org.json.JSONObject
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : Activity() {
     private val boardFragment = BoardFragment()
     private val roleFragment = RoleFragment()
 
@@ -57,6 +57,7 @@ class GameActivity : AppCompatActivity() {
                 roleFragment.handleResponseMessage(message)
             }
             MessageType.QUEST_INFO.name -> boardFragment.handleResponseMessage(message)
+            MessageType.QUEST_RESULT.name -> boardFragment.handleResponseMessage(message)
             MessageType.PARTY_VOTE.name -> boardFragment.handleResponseMessage(message)
             MessageType.PARTY_RESULT.name -> boardFragment.handleResponseMessage(message)
             MessageType.CHOOSE_TARGET.name -> boardFragment.handleResponseMessage(message)

@@ -54,7 +54,7 @@ class PlayerListAdapter(player: Player) :
 
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         mItemTouchHelper.attachToRecyclerView(recyclerView)
     }

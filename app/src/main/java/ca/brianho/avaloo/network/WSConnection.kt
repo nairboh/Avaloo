@@ -1,5 +1,6 @@
 package ca.brianho.avaloo.network
 
+import android.util.Log
 import ca.brianho.avaloo.utils.RxEventBus
 import okhttp3.*
 import org.jetbrains.anko.AnkoLogger
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit
 object WSConnection : AnkoLogger {
     private var websocket: WebSocket? = null
 
-    private fun connect(url: String = "ws://avaloo-server.herokuapp.com/") {
+    private fun connect(url: String = "ws://mc.brianho.ca:8080") {
         val client = OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build()
         val request = Request.Builder().url(url).build()
         websocket = client.newWebSocket(request, WSListener)
@@ -33,7 +34,8 @@ object WSConnection : AnkoLogger {
 
     private object WSListener : WebSocketListener() {
         override fun onMessage(webSocket: WebSocket?, message: String?) {
-            debug("WebSocket message received: " + message)
+            debug("WebSocket message received: $message")
+            Log.e("MSG", message)
 
             if (message == null || message.isBlank()) {
                 error("Websocket message is null or blank")

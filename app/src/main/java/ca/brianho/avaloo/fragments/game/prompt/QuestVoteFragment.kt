@@ -9,31 +9,31 @@ import android.view.ViewGroup
 import ca.brianho.avaloo.R
 import ca.brianho.avaloo.models.*
 import ca.brianho.avaloo.utils.MoshiInstance
-import ca.brianho.avaloo.utils.role
-import kotlinx.android.synthetic.main.fragment_vote.*
+import kotlinx.android.synthetic.main.fragment_choose.*
+import org.jetbrains.anko.toast
 
 class QuestVoteFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_vote, container, false)
+        return inflater.inflate(R.layout.fragment_choose, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        approveButton.setOnClickListener { sendPartyVoteRequest(it) }
-        declineButton.setOnClickListener { sendPartyVoteRequest(it) }
+        infoTextView.text = getString(R.string.quest_prompt_text)
+        playerPartyVoteSpinner.visibility = View.GONE
+        playerQuestVoteSpinner.visibility = View.VISIBLE
 
-//        if (role.team == "Good") {
-//            declineButton.text = getString(R.string.approve)
-//        }
+        submitButton.setOnClickListener { sendQuestVoteRequest() }
     }
 
-    private fun sendPartyVoteRequest(view: View) {
-        val vote: String = when (view.id) {
-            R.id.approveButton -> "approve"
-            R.id.declineButton -> "decline"
-            else -> error("Invalid view")
+    private fun sendQuestVoteRequest() {
+        val vote: String = playerQuestVoteSpinner.selectedItem.toString()
+
+        if (vote == "Choose") {
+            toast("Please make a decision first")
+            return
         }
 
         MoshiInstance.sendRequestAsJson(QuestVoteRequest(gameId = Game.gameId, vote = vote))

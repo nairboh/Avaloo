@@ -67,6 +67,8 @@ data class QuestVoteRequest(@Json(name = "type") val type: String = MessageType.
                             @Json(name = "gameId") val gameId: String,
                             @Json(name = "vote") val vote: String)
 
+data class QuestResultResponse(@Json(name = "result") val result: String)
+
 data class ChooseTargetResponse(@Json(name = "playerList") val playerList: List<Player>)
 
 data class ChooseTargetRequest(@Json(name = "type") val type: String = MessageType.CHOOSE_TARGET.name,

@@ -20,6 +20,8 @@ import org.json.JSONObject
 
 class BoardFragment : Fragment() {
     private var questParticipant = false
+    private var questNum = 0
+    private lateinit var questResults: Array<String>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,6 +30,7 @@ class BoardFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        questResults = Array(5, { "" })
         setupViewsAndListeners()
     }
 
@@ -42,6 +45,7 @@ class BoardFragment : Fragment() {
         when (JSONObject(message)[getString(R.string.key_type)]) {
             MessageType.CLIENT_SETUP.name -> handleClientSetupResponse(message)
             MessageType.QUEST_INFO.name -> handleQuestInfoResponse(message)
+            MessageType.QUEST_RESULT.name -> handleQuestResultResponse(message)
             MessageType.PARTY_VOTE.name -> handlePartyVoteResponse(message)
             MessageType.PARTY_RESULT.name -> handlePartyResultResponse(message)
             MessageType.CHOOSE_TARGET.name -> handleChooseTargetResponse(message)
@@ -74,6 +78,23 @@ class BoardFragment : Fragment() {
                 recyclerView.visibility = View.GONE
                 button.visibility = View.GONE
             }
+        }
+    }
+
+    private fun handleQuestResultResponse(message: String) {
+        val questResultResponse = MoshiInstance.fromJson<QuestResultResponse>(message)
+
+        questResults[questNum] = questResultResponse.result
+        questNum++
+
+        runOnUiThread {
+            questResultsTextView.text = getString(R.string.quest_results,
+                    questResults[0],
+                    questResults[1],
+                    questResults[2],
+                    questResults[3],
+                    questResults[4]
+            )
         }
     }
 
