@@ -23,7 +23,7 @@ class PlayerListAdapter(player: Player) :
             object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) { }
 
-                override fun onMove(recyclerView: RecyclerView?,
+                override fun onMove(recyclerView: RecyclerView,
                                     viewHolder: RecyclerView.ViewHolder,
                                     target: RecyclerView.ViewHolder): Boolean {
                     val fromPosition = viewHolder.adapterPosition
@@ -45,7 +45,7 @@ class PlayerListAdapter(player: Player) :
                     return true
                 }
 
-                override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
+                override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                     super.clearView(recyclerView, viewHolder)
                     notifyDataSetChanged()
                 }

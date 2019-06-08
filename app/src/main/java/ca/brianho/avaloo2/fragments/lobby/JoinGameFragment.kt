@@ -43,7 +43,7 @@ class JoinGameFragment : Fragment(), AnkoLogger {
 
     private fun setupAndStartScanner() {
         val intent = IntentIntegrator(activity)
-                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
                 .setPrompt(getString(R.string.scan_msg))
                 .createScanIntent()
 
